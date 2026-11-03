@@ -87,10 +87,36 @@
             height: 4px;
             width: 100%;
         }
+        
+        /* Accessibility Text Scaling classes */
+        html.text-sm-mode { font-size: 14px; }
+        html.text-base-mode { font-size: 16px; }
+        html.text-lg-mode { font-size: 18px; }
+        
+        @keyframes agent-highlight {
+            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); border-color: #f97316; }
+            70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); border-color: #f97316; }
+            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); border-color: #d1d5db; }
+        }
+        .agent-filled {
+            animation: agent-highlight 2s ease-out;
+            background-color: #fff7ed !important; /* Light saffron */
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
     <div class="tricolor-border"></div>
+    <!-- Top Accessibility Bar (GovTech Requirement) -->
+    <div class="bg-gray-900 text-gray-300 text-xs py-1 px-4 flex justify-end items-center space-x-4 border-b border-gray-800">
+        <span class="hidden sm:inline">Government of India | Citizen Portal</span>
+        <div class="flex items-center space-x-2 border-l border-gray-700 pl-4">
+            <span class="mr-1">Text Size:</span>
+            <button onclick="setTextSize('sm')" class="hover:text-white px-1 font-medium" title="Decrease Text Size">A-</button>
+            <button onclick="setTextSize('base')" class="hover:text-white px-1 font-medium text-sm" title="Normal Text Size">A</button>
+            <button onclick="setTextSize('lg')" class="hover:text-white px-1 font-medium text-base" title="Increase Text Size">A+</button>
+        </div>
+    </div>
+    
     <!-- Header / Navigation -->
     <header class="bg-gov-blue text-white shadow-md sticky top-0 z-50">
         <div class="container mx-auto px-4">
@@ -229,11 +255,19 @@
 
             <div class="bg-gray-50 border border-gray-200 rounded-b-xl p-4 shadow-sm">
                 <!-- Suggestions -->
-                <div class="flex overflow-x-auto space-x-2 mb-3 pb-2 chat-scroll">
-                    <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_1">Am I eligible for PM-KISAN?</button>
-                    <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_2">How to apply for PMAY?</button>
-                    <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_3">What is Ayushman Bharat?</button>
-                    <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_4">Track my application</button>
+                <div class="mb-2">
+                    <p class="text-xs text-gray-500 mb-2 px-1" data-i18n="chat_topics_hint"><i class="fas fa-bolt text-yellow-500 mr-1"></i> Quick Topics (Available Offline):</p>
+                    <div class="flex overflow-x-auto space-x-2 pb-2 chat-scroll">
+                        <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_1">Am I eligible for PM-KISAN?</button>
+                        <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_2">How to apply for PMAY?</button>
+                        <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_3">What is Ayushman Bharat?</button>
+                        <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_4">Track my application</button>
+                        <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_5">Link PAN & Aadhaar</button>
+                        <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_6">Check PF Balance</button>
+                        <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_7">Income Tax Slabs</button>
+                        <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_8">Life Certificate</button>
+                        <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_9">Apply for Certificates</button>
+                    </div>
                 </div>
                 
                 <form id="chat-form" onsubmit="handleChatSubmit(event)" class="relative flex items-center">
@@ -674,10 +708,16 @@
                 chat_header_title: "Seva Sahayak (AI Agent)",
                 chat_header_status: "Online | Ready to help",
                 chat_placeholder: "Type your query here...",
+                chat_topics_hint: "<i class='fas fa-bolt text-yellow-500 mr-1'></i> Quick Topics (Available Offline):",
                 chat_sug_1: "Am I eligible for PM-KISAN?",
-                chat_sug_2: "How to apply for PMAY?",
+                chat_sug_2: "Apply for MH Domicile",
                 chat_sug_3: "What is Ayushman Bharat?",
                 chat_sug_4: "Track my application",
+                chat_sug_5: "Link PAN & Aadhaar",
+                chat_sug_6: "Check PF Balance",
+                chat_sug_7: "Income Tax Slabs",
+                chat_sug_8: "Life Certificate",
+                chat_sug_9: "Apply for Certificates",
                 schemes_title: "Schemes Directory",
                 schemes_subtitle: "Structured information from official government portals.",
                 schemes_search_ph: "Search schemes...",
@@ -730,28 +770,29 @@
                 sim_wa_btn: "Simulate WhatsApp Update",
                 wa_title: "Jan Seva Update",
                 wa_body: "Your application APP-9824-MH status has been updated to: APPROVED. You can download the certificate from the portal.",
+                wa_agent_init: "Your Jan Seva Agent has initiated a new Domicile application for you.",
                 
                 // FAQ Section (English)
                 faq_title: "Citizen Query & FAQ Portal",
                 faq_subtitle: "Find answers to common questions regarding schemes, taxes, pensions, and certificates.",
                 faq_cat_schemes: "Government Schemes & Subsidies",
                 faq_q1_scheme: "Who is eligible to apply for government schemes, and what are the income criteria?",
-                faq_a1_scheme: "Eligibility varies by scheme. Generally, EWS (Economically Weaker Sections) requires an annual family income below ₹8 Lakhs. Always check specific scheme guidelines like PM-KISAN (landholding farmers) or PM-JAY (SECC 2011 database).",
+                faq_a1_scheme: "<ul class='list-disc pl-5 space-y-2'><li><strong>General Welfare / EWS Schemes:</strong> Economically Weaker Section (EWS) reservations and benefits apply to individuals in the general category whose total family gross annual income remains below ₹8 Lakhs. It strictly excludes families owning 5 acres of agricultural land, a residential flat of 1,000 sq ft+, or residential plots above designated thresholds.</li><li><strong>Health Infrastructure Benefits (PM-JAY / Ayushman Bharat):</strong> Focuses heavily on the bottom 40% of poor and vulnerable families. Eligibility is entirely determined by the Socio-Economic Caste Census (SECC 2011) database, auto-identifying occupational vulnerabilities in urban spaces and deprivation parameters.</li><li><strong>Direct Farmer Support (PM-KISAN):</strong> Target audience strictly encompasses cultivable landholding farmer families across India. Exclusions apply to institutional landholders, high-income taxpayers, active/retired government employees, and professionals (doctors, engineers, lawyers).</li></ul>",
                 faq_q2_scheme: "How and where can I apply for a scheme?",
-                faq_a2_scheme: "You can apply online via dedicated portals (like pmkisan.gov.in) or offline at Common Service Centres (CSCs), Tehsil offices, or Gram Panchayat offices.",
+                faq_a2_scheme: "<ul class='list-disc pl-5 space-y-2'><li><strong>Digital Application Track:</strong> Register officially on the consolidated central discovery hub at the myScheme Portal. For direct financial incentives, create accounts on specific departmental micro-sites like PM-KISAN E-Portal.</li><li><strong>Physical Assisted Track:</strong> Visit a nearby government-approved Common Service Centre (CSC) or state-specific facilitation hubs (e.g., Maha e-Seva Kendras, MeeSeva, e-Mitra). Alternatively, access local governance desks at the Gram Panchayat Office or the Tehsil / SDM Office.</li><li><strong>Core Documentation Kit:</strong> Always carry your verified Aadhaar card, active Mobile Number linked to Aadhaar, a valid Income Certificate issued by a competent Revenue authority, and a Bank Account Passbook (with IFSC) to facilitate Direct Benefit Transfer (DBT).</li></ul>",
                 faq_cat_taxes: "Taxes & GST",
                 faq_q1_tax: "How do I link my PAN card with my Aadhaar card?",
-                faq_a1_tax: "Visit the Income Tax e-Filing portal (incometax.gov.in). Go to the 'Link Aadhaar' section under Quick Links. Enter your PAN, Aadhaar number, and name as per Aadhaar to submit the request.",
+                faq_a1_tax: "<ul class='list-decimal pl-5 space-y-2'><li><strong>Step-by-Step E-Portal Path:</strong> Navigate directly to the official Income Tax e-Filing Portal. Locate the 'Quick Links' structural grid on the homepage and click on 'Link Aadhaar'.</li><li><strong>Identity Grid Entry:</strong> Carefully input your 10-digit PAN string, 12-digit Aadhaar number, and your exact legal name along with your mobile number as printed on your identity card.</li><li><strong>Validation & OTP:</strong> Verify data fields. Click 'Link Aadhaar'. Execute authentication via the Time-based One-Time Password (OTP) dispatched to your Aadhaar-registered mobile device.</li><li><strong>Status Check Verification:</strong> If the deadlines have passed, you may need to complete an online fee payment under Challan ITNS 280 (Head 0021 / Sub-head 500) prior to finalizing the mapping.</li></ul>",
                 faq_q2_tax: "What are the current income tax slabs?",
-                faq_a2_tax: "Under the new tax regime (default), income up to ₹3 Lakh is exempt. Slabs scale up gradually. Rebates under Section 87A often make income up to ₹7 Lakh tax-free. Consult the latest budget documents for exact percentages.",
+                faq_a2_tax: "<p class='mb-2'>Under the default New Tax Regime (updated for active fiscal cycles), the progressive tax brackets structured for individuals, senior citizens, and super seniors alike are outlined below:</p><table class='w-full text-xs text-left border border-gray-200 mb-3'><thead class='bg-gray-50 border-b'><tr><th class='p-2'>Total Annual Taxable Income</th><th class='p-2'>New Regime Tax Rate</th></tr></thead><tbody><tr class='border-b'><td class='p-2'>Up to ₹4,00,000</td><td class='p-2 font-medium text-green-600'>NIL (Exempt)</td></tr><tr class='border-b'><td class='p-2'>₹4,00,001 to ₹8,00,000</td><td class='p-2'>5% of amount exceeding ₹4 Lakh</td></tr><tr class='border-b'><td class='p-2'>₹8,00,001 to ₹12,00,000</td><td class='p-2'>10% (₹20,000 + 10% of amount exceeding ₹8 Lakh)</td></tr><tr class='border-b'><td class='p-2'>₹12,00,001 to ₹16,00,000</td><td class='p-2'>15% (₹60,000 + 15% of amount exceeding ₹12 Lakh)</td></tr><tr class='border-b'><td class='p-2'>₹16,00,001 to ₹20,00,000</td><td class='p-2'>20% (₹1,20,000 + 20% of amount exceeding ₹16 Lakh)</td></tr><tr class='border-b'><td class='p-2'>₹20,00,001 to ₹24,00,000</td><td class='p-2'>25% (₹2,00,000 + 25% of amount exceeding ₹20 Lakh)</td></tr><tr><td class='p-2'>Above ₹24,00,000</td><td class='p-2'>30% (₹3,00,000 + 30% of amount exceeding ₹24 Lakh)</td></tr></tbody></table><ul class='list-disc pl-5 space-y-1 text-sm'><li><strong>The Salaried Advantage:</strong> Salaried individuals and pensioners are eligible for a ₹75,000 Standard Deduction right off their gross earnings.</li><li><strong>Section 87A Tax Rebate:</strong> A tax rebate up to ₹60,000 applies to net taxable income falling within ₹12 Lakhs. (An individual with a gross salary up to ₹12.75 Lakhs pays ₹0 total income tax).</li></ul>",
                 faq_cat_pension: "Pensions & Retirement Benefits",
                 faq_q1_pension: "How can I check my Provident Fund (PF) balance or withdraw money?",
-                faq_a1_pension: "You can check your PF balance and request withdrawals using the EPFO Member e-Sewa portal or the UMANG mobile app by logging in with your UAN (Universal Account Number) and password.",
+                faq_a1_pension: "<ul class='list-disc pl-5 space-y-2'><li><strong>Digital Self-Service Portal:</strong> Access the EPFO Member Unified Portal. Log in using your unique UAN (Universal Account Number) and credentials. Ensure your UAN is fully KYC-compliant with linked Aadhaar, PAN, and Bank specifications.</li><li><strong>Passbook Monitoring View:</strong> For instantaneous balance checks, head directly to the EPFO Passbook View Page or load the central government's UMANG Mobile App, choosing the EPFO department module.</li><li><strong>Online Emergency Claims:</strong> Under the 'Online Services' tab, choose 'Claim (Form-31, 19, 10C & 10D)'. Select Form 31 for partial advance withdrawals (e.g., housing, medical emergency, marriage) and execute online tracking via the 'Track Claim Status' tab.</li></ul>",
                 faq_q2_pension: "How to submit a digital life certificate (Jeevan Pramaan)?",
-                faq_a2_pension: "Pensioners can submit Jeevan Pramaan using the Face RD app on smartphones, at local CSCs, bank branches, or via Postmen utilizing the India Post Payments Bank doorstep service.",
+                faq_a2_pension: "<ul class='list-disc pl-5 space-y-2'><li><strong>Smartphone Face Authentication:</strong> Download the official Jeevan Pramaan Mobile App alongside the AadhaarFaceRD service application. Pensioners can perform facial scanning using a front-facing camera to instantly authenticate biometric survival proofs.</li><li><strong>Doorstep Banking & Postal Deliveries:</strong> Request a doorstep visit through the India Post Payments Bank (IPPB) Service. A local postman will bring a biometric fingerprint device directly to the pensioner's home for a small fee.</li><li><strong>Physical Walk-In Hubs:</strong> Walk into any neighboring Common Service Centre (CSC), Citizen Facilitation Desk, or the direct branch counter of the bank where your monthly pension distributions are managed.</li></ul>",
                 faq_cat_cert: "Certificates & Official Documents",
                 faq_q1_cert: "Where do I apply for an Income, Caste, or Domicile certificate?",
-                faq_a1_cert: "Applications can be made on your State's e-District portal online, or physically at the local Tehsildar / SDM office or a nearby Common Service Centre (CSC / Maha-e-Seva Kendra)."
+                faq_a1_cert: "<ul class='list-disc pl-5 space-y-2'><li><strong>State e-District Gateways:</strong> Every state operates its specialized administrative service network. You can apply directly through online portals such as Aaple Sarkar (Maharashtra), Edistrict (Delhi/UP), or MeeSeva (Andhra Pradesh/Telangana).</li><li><strong>Offline Processing Centers:</strong> Submit physical file sets to the Tehsildar / Sub-Divisional Magistrate (SDM) Office or utilize an assisted kiosk at a regional Maha-e-Seva Kendra / CSC center.</li><li><strong>Standard Verification Checklist:</strong> Proof of Identity (Aadhaar, Voter ID, PAN), Proof of Address (Electricity Bill, Ration Card, 7/12 Extract), Caste Proof (School Leaving Certificate, heritage certificates), and Income Proof (Form 16, salary slips, Talathi income evaluation).</li></ul>"
             },
             hi: {
                 app_name: "जन सेवा एजेंट",
@@ -782,10 +823,16 @@
                 chat_header_title: "सेवा सहायक (AI एजेंट)",
                 chat_header_status: "ऑनलाइन | मदद के लिए तैयार",
                 chat_placeholder: "अपनी पूछताछ यहां लिखें...",
+                chat_topics_hint: "<i class='fas fa-bolt text-yellow-500 mr-1'></i> त्वरित विषय (ऑफ़लाइन उपलब्ध):",
                 chat_sug_1: "क्या मैं पीएम-किसान के लिए पात्र हूँ?",
-                chat_sug_2: "पीएमएवाई (PMAY) के लिए आवेदन कैसे करें?",
+                chat_sug_2: "MH अधिवास लागू करें",
                 chat_sug_3: "आयुष्मान भारत क्या है?",
                 chat_sug_4: "मेरा आवेदन ट्रैक करें",
+                chat_sug_5: "पैन और आधार लिंक करें",
+                chat_sug_6: "पीएफ (PF) बैलेंस चेक करें",
+                chat_sug_7: "आयकर स्लैब",
+                chat_sug_8: "जीवन प्रमाण पत्र",
+                chat_sug_9: "प्रमाणपत्र के लिए आवेदन",
                 schemes_title: "योजना निर्देशिका",
                 schemes_subtitle: "आधिकारिक सरकारी पोर्टलों से संरचित जानकारी।",
                 schemes_search_ph: "योजनाएं खोजें...",
@@ -838,6 +885,7 @@
                 sim_wa_btn: "व्हाट्सएप अपडेट का अनुकरण करें",
                 wa_title: "जन सेवा अपडेट",
                 wa_body: "आपका आवेदन APP-9824-MH स्थिति अपडेट कर दी गई है: स्वीकृत। आप पोर्टल से प्रमाणपत्र डाउनलोड कर सकते हैं।",
+                wa_agent_init: "आपके जन सेवा एजेंट ने आपके लिए एक नया अधिवास (Domicile) आवेदन शुरू किया है।",
 
                 // FAQ Section (Hindi)
                 faq_title: "नागरिक प्रश्न और सामान्य प्रश्न (FAQ) पोर्टल",
@@ -890,10 +938,16 @@
                 chat_header_title: "सेवा सहाय्यक (एआय एजंट)",
                 chat_header_status: "ऑनलाइन | मदतीसाठी तयार",
                 chat_placeholder: "तुमची शंका येथे टाइप करा...",
+                chat_topics_hint: "<i class='fas fa-bolt text-yellow-500 mr-1'></i> जलद विषय (ऑफलाइन उपलब्ध):",
                 chat_sug_1: "मी पीएम-किसानसाठी पात्र आहे का?",
-                chat_sug_2: "PMAY साठी अर्ज कसा करावा?",
+                chat_sug_2: "MH अधिवासासाठी अर्ज",
                 chat_sug_3: "आयुष्मान भारत म्हणजे काय?",
                 chat_sug_4: "माझा अर्ज ट्रॅक करा",
+                chat_sug_5: "पॅन आणि आधार लिंक करा",
+                chat_sug_6: "पीएफ (PF) शिल्लक तपासा",
+                chat_sug_7: "आयकर स्लॅब",
+                chat_sug_8: "जीवन प्रमाणपत्र",
+                chat_sug_9: "प्रमाणपत्रांसाठी अर्ज करा",
                 schemes_title: "योजना निर्देशिका",
                 schemes_subtitle: "अधिकृत सरकारी पोर्टल्सवरील संरचित माहिती.",
                 schemes_search_ph: "योजना शोधा...",
@@ -946,6 +1000,7 @@
                 sim_wa_btn: "व्हॉट्सॲप अपडेटचे अनुकरण करा",
                 wa_title: "जन सेवा अपडेट",
                 wa_body: "तुमचा अर्ज APP-9824-MH स्थिती अपडेट केली गेली आहे: मंजूर. तुम्ही पोर्टलवरून प्रमाणपत्र डाउनलोड करू शकता.",
+                wa_agent_init: "तुमच्या जन सेवा एजंटने तुमच्यासाठी नवीन अधिवास (Domicile) अर्ज सुरू केला आहे.",
                 
                 // FAQ Section (Marathi)
                 faq_title: "नागरिक शंका आणि FAQ पोर्टल",
@@ -1065,6 +1120,13 @@
             }
         }
 
+        // --- Accessibility Logic ---
+        function setTextSize(size) {
+            const html = document.documentElement;
+            html.classList.remove('text-sm-mode', 'text-base-mode', 'text-lg-mode');
+            html.classList.add(`text-${size}-mode`);
+        }
+
         // --- Gemini AI Chat Logic ---
         let chatHistory = [];
         let geminiApiKey = localStorage.getItem('jan_seva_gemini_key') || "";
@@ -1145,18 +1207,21 @@
 
         const mockResponses = {
             en: [
-                { keys: ["pm-kisan", "kisan", "farmer", "agriculture", "eligible"], text: "**PM-KISAN Eligibility:**\n• You must be a landholding farmer family.\n• You must be an Indian citizen.\n• Excludes institutional landholders, taxpayers, and active/retired government employees.\nBenefit: Rs. 6,000/year in 3 installments." },
+                { keys: ["apply for mh domicile", "domicile maharashtra", "mh domicile"], text: "I can help you with that! As your Agent, I am now transferring you to the Application Portal and pre-filling your state as 'Maharashtra' and certificate type as 'Domicile'. [[AGENT_ACTION:APPLY:MH:domicile]]" },
+                { keys: ["pm-kisan", "kisan", "farmer", "agriculture", "eligible", "scheme criteria"], text: "**PM-KISAN Eligibility:**\n• Target audience strictly encompasses cultivable landholding farmer families across India.\n• Exclusions apply to institutional landholders, high-income taxpayers, active/retired government employees, and professionals.\n\n**General Welfare / EWS Schemes:**\n• Economically Weaker Section (EWS) benefits apply to individuals whose total family gross annual income remains below ₹8 Lakhs.\n• Strictly excludes families owning 5 acres of agricultural land or a residential flat of 1,000 sq ft+." },
+                { keys: ["apply", "where to apply", "how to apply"], text: "**How to Apply for Schemes:**\n• **Digital Application Track:** Register officially on the consolidated central discovery hub at the myScheme Portal. For direct financial incentives, create accounts on specific departmental micro-sites like PM-KISAN E-Portal.\n• **Physical Assisted Track:** Visit a nearby government-approved Common Service Centre (CSC) or state-specific facilitation hubs (e.g., Maha e-Seva Kendras). Alternatively, access local governance desks at the Gram Panchayat Office or the Tehsil / SDM Office.\n• **Core Documentation Kit:** Always carry your verified Aadhaar card, active Mobile Number linked to Aadhaar, a valid Income Certificate, and a Bank Account Passbook." },
                 { keys: ["pmay", "awas", "house", "housing"], text: "**PMAY (Housing) Eligibility:**\n• Beneficiary family should not own a pucca house anywhere in India.\n• Income criteria applies based on EWS/LIG/MIG categories.\n• Adult female membership is often mandatory in property ownership." },
-                { keys: ["ayushman", "pmjay", "health", "hospital"], text: "**Ayushman Bharat (PM-JAY):**\nProvides health cover of Rs. 5 lakhs per family per year for secondary and tertiary care hospitalization. Eligibility is based on SECC 2011 database deprivations." },
+                { keys: ["ayushman", "pmjay", "health", "hospital"], text: "**Ayushman Bharat (PM-JAY):**\nFocuses heavily on the bottom 40% of poor and vulnerable families. Eligibility is entirely determined by the Socio-Economic Caste Census (SECC 2011) database, auto-identifying occupational vulnerabilities in urban spaces and deprivation parameters in rural areas." },
                 { keys: ["track", "status"], text: "To track your application, please go to the 'Track Status' section from the menu and enter your Application ID (e.g., APP-1234-MH)." },
-                { keys: ["pan", "aadhaar", "link"], text: "**Link PAN with Aadhaar:**\nVisit incometax.gov.in. Navigate to the 'Link Aadhaar' section. You'll need your PAN, Aadhaar number, and name as printed on Aadhaar. A late fee may apply based on current rules." },
-                { keys: ["pf", "provident", "withdraw", "balance", "epfo"], text: "**Check PF / Withdraw:**\nYou can check your PF balance or initiate a withdrawal claim using the EPFO Member e-Sewa portal or the UMANG mobile app. Make sure your UAN is activated and linked with Aadhaar." },
-                { keys: ["tax", "itr", "return", "slab"], text: "**Income Tax Info:**\nThe last date to file ITR is typically July 31st. Under the new tax regime, income up to ₹3 Lakh is exempt, and rebates make up to ₹7 Lakh effectively tax-free." },
-                { keys: ["certificate", "caste", "income", "domicile"], text: "**Official Certificates:**\nYou can apply for Income, Caste, or Domicile certificates via your State's online e-District portal or by visiting the nearest Common Service Centre (CSC) or Tehsildar office." }
+                { keys: ["pan", "aadhaar", "link"], text: "**Link PAN with Aadhaar:**\n• **Step-by-Step E-Portal Path:** Navigate directly to the official Income Tax e-Filing Portal. Locate the 'Quick Links' structural grid on the homepage and click on 'Link Aadhaar'.\n• **Identity Grid Entry:** Carefully input your 10-digit PAN string, 12-digit Aadhaar number, and your exact legal name.\n• **Status Check Verification:** If deadlines have passed, you may need to complete an online fee payment under Challan ITNS 280 (Head 0021 / Sub-head 500) prior to finalizing the mapping." },
+                { keys: ["pf", "provident", "withdraw", "balance", "epfo", "form 31"], text: "**Check PF / Withdraw:**\n• **Digital Self-Service Portal:** Access the EPFO Member Unified Portal. Log in using your unique UAN and credentials. Ensure your UAN is fully KYC-compliant.\n• **Passbook Monitoring View:** For instantaneous balance checks, head directly to the EPFO Passbook View Page or load the UMANG Mobile App.\n• **Online Emergency Claims:** Under 'Online Services', choose 'Claim (Form-31, 19, 10C & 10D)'. Select Form 31 for partial advance withdrawals." },
+                { keys: ["tax", "itr", "return", "slab", "regime"], text: "**New Income Tax Regime Slabs:**\n• Up to ₹4,00,000: NIL (Exempt)\n• ₹4,00,001 to ₹8,00,000: 5% of amount exceeding ₹4 Lakh\n• ₹8,00,001 to ₹12,00,000: 10% (₹20,000 + 10% of amount exceeding ₹8 Lakh)\n• ₹12,00,001 to ₹16,00,000: 15% (₹60,000 + 15% of amount exceeding ₹12 Lakh)\n• ₹16,00,001 to ₹20,00,000: 20% (₹1,20,000 + 20% of amount exceeding ₹16 Lakh)\n• ₹20,00,001 to ₹24,00,000: 25% (₹2,00,000 + 25% of amount exceeding ₹20 Lakh)\n• Above ₹24,00,000: 30% (₹3,00,000 + 30% of amount exceeding ₹24 Lakh)\n\n*The Salaried Advantage:* Salaried individuals get a ₹75,000 Standard Deduction. *Section 87A Tax Rebate:* A tax rebate up to ₹60,000 applies to net taxable income falling within ₹12 Lakhs (Gross salary up to ₹12.75 Lakhs pays ₹0 tax)." },
+                { keys: ["jeevan", "pramaan", "life certificate"], text: "**Digital Life Certificate (Jeevan Pramaan):**\n• **Smartphone Face Authentication:** Download the official Jeevan Pramaan Mobile App alongside the AadhaarFaceRD service application. Pensioners can perform facial scanning using a front-facing camera.\n• **Doorstep Banking:** Request a doorstep visit through the India Post Payments Bank (IPPB) Service.\n• **Physical Walk-In Hubs:** Walk into any neighboring Common Service Centre (CSC) or bank branch." },
+                { keys: ["certificate", "caste", "income", "domicile", "edistrict"], text: "**Official Certificates:**\n• **State e-District Gateways:** Every state operates its specialized administrative service network. Apply online via Aaple Sarkar (Maharashtra), Edistrict (Delhi/UP), or MeeSeva (Andhra Pradesh/Telangana).\n• **Offline Processing Centers:** Submit physical file sets to the Tehsildar / SDM Office or utilize an assisted kiosk at a regional CSC center.\n• **Standard Document Checklist:** Proof of Identity (Aadhaar/PAN), Proof of Address (Bill/Ration Card), Caste Proof (School Leaving Certificate), and Income Proof (Form 16/Talathi evaluation)." }
             ],
             hi: [
-                { keys: ["pm-kisan", "kisan", "किसान", "कृषि", "पात्रता"], text: "**पीएम-किसान पात्रता:**\n• आपके पास कृषि योग्य भूमि होनी चाहिए।\n• आप एक भारतीय नागरिक होने चाहिए।\n• करदाताओं और सरकारी कर्मचारियों को बाहर रखा गया है।\nलाभ: 3 किस्तों में 6,000 रुपये/वर्ष।" },
-                { keys: ["pmay", "awas", "आवास", "घर"], text: "**पीएमएवाई (आवास) पात्रता:**\n• लाभार्थी परिवार के पास भारत में कहीं भी पक्का घर नहीं होना चाहिए।\n• ईडब्ल्यूएस/एलआईजी/एमआईजी श्रेणियों के आधार पर आय मानदंड लागू होता है।" },
+                { keys: ["mh अधिवास लागू करें", "maharashtra domicile", "domicile", "अधिवास"], text: "मैं इसमें आपकी मदद कर सकता हूँ! आपके एजेंट के रूप में, मैं अब आपको आवेदन पोर्टल पर स्थानांतरित कर रहा हूँ और आपके विवरण स्वतः भर रहा हूँ। [[AGENT_ACTION:APPLY:MH:domicile]]" },
+                { keys: ["pm-kisan", "kisan", "किसान", "कृषि", "पात्रता"], text: "**पीएम-किसान पात्रता:**\n• आपके पास कृषि योग्य भूमि होनी चाहिए।\n• आप एक भारतीय नागरिक होने चाहिए।\n• करदाताओं और सरकारी कर्मचारियों को बाहर रखा गया है।\nलाभ: 3 किस्तों में 6,000 रुपये/वर्ष." },
                 { keys: ["ayushman", "pmjay", "स्वास्थ्य", "अस्पताल", "आयुष्मान"], text: "**आयुष्मान भारत (PM-JAY):**\nमाध्यमिक और तृतीयक देखभाल के लिए प्रति परिवार प्रति वर्ष 5 लाख रुपये का स्वास्थ्य कवर प्रदान करता है। पात्रता एसईसीसी 2011 डेटाबेस पर आधारित है।" },
                 { keys: ["track", "स्थिति", "ट्रैक"], text: "अपने आवेदन को ट्रैक करने के लिए, कृपया मेनू से 'स्थिति जांचें' अनुभाग पर जाएं और अपना एप्लिकेशन आईडी दर्ज करें।" },
                 { keys: ["pan", "aadhaar", "लिंक", "पैन", "आधार"], text: "**पैन को आधार से लिंक करें:**\nincometax.gov.in पर जाएं। 'लिंक आधार' अनुभाग पर जाएं। आपको अपना पैन, आधार नंबर और नाम की आवश्यकता होगी।" },
@@ -1165,6 +1230,7 @@
                 { keys: ["certificate", "जाति", "आय", "प्रमाणपत्र", "अधिवास"], text: "**आधिकारिक प्रमाणपत्र:**\nआप अपने राज्य के ऑनलाइन ई-डिस्ट्रिक्ट पोर्टल के माध्यम से या निकटतम सीएससी (CSC) पर जाकर आय, जाति या अधिवास प्रमाण पत्र के लिए आवेदन कर सकते हैं।" }
             ],
             mr: [
+                { keys: ["mh अधिवासासाठी अर्ज", "maharashtra domicile", "domicile", "अधिवास"], text: "मी तुम्हाला यात नक्कीच मदत करू शकतो! तुमचा एजंट म्हणून, मी तुम्हाला आता अर्ज पोर्टलवर नेत आहे आणि तुमची माहिती स्वयंचलितपणे भरत आहे. [[AGENT_ACTION:APPLY:MH:domicile]]" },
                 { keys: ["pm-kisan", "kisan", "शेतकरी", "कृषी", "किसान", "पात्रता"], text: "**पीएम-किसान पात्रता:**\n• तुमच्या नावावर शेतजमीन असावी.\n• तुम्ही भारतीय नागरिक असावे.\n• करदाते आणि सरकारी कर्मचाऱ्यांना वगळण्यात आले आहे.\nफायदा: ३ हप्त्यांमध्ये ६,००० रुपये/वर्ष." },
                 { keys: ["pmay", "awas", "घर", "आवास"], text: "**पीएमएवाय (आवास) पात्रता:**\n• लाभार्थी कुटुंबाकडे भारतात कुठेही पक्के घर नसावे.\n• EWS/LIG/MIG श्रेणींवर आधारित उत्पन्न निकष लागू." },
                 { keys: ["ayushman", "pmjay", "आरोग्य", "रुग्णालय", "आयुष्मान"], text: "**आयुष्मान भारत (PM-JAY):**\nदुय्यम आणि तृतीयक काळजीसाठी प्रति कुटुंब प्रति वर्ष ५ लाख रुपयांचे आरोग्य संरक्षण देते. पात्रता SECC 2011 डेटाबेसवर आधारित आहे." },
@@ -1193,9 +1259,42 @@
             
             const renderBotMessage = (text) => {
                 document.getElementById('typing-indicator')?.remove();
-                let formatted = escapeHTML(text).replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+                
+                // --- AGENTIC ACTION INTERCEPTOR ---
+                let displayText = text;
+                const actionMatch = text.match(/\[\[AGENT_ACTION:(.*?)\]\]/);
+                if(actionMatch) {
+                    const params = actionMatch[1].split(':');
+                    displayText = text.replace(actionMatch[0], '').trim(); // Remove tag from UI
+                    
+                    // Execute UI Action after a short delay
+                    if(params[0] === 'APPLY') {
+                        setTimeout(() => {
+                            switchView('apply');
+                            // Pre-fill the form based on agent data
+                            const stateSelect = document.querySelector('#application-form select');
+                            if(stateSelect) {
+                                stateSelect.value = params[1];
+                                stateSelect.classList.add('agent-filled');
+                                setTimeout(() => stateSelect.classList.remove('agent-filled'), 2000);
+                            }
+                            
+                            const radioBtn = document.querySelector(`#application-form input[value="${params[2]}"]`);
+                            if(radioBtn) {
+                                radioBtn.checked = true;
+                                radioBtn.parentElement.classList.add('agent-filled');
+                                setTimeout(() => radioBtn.parentElement.classList.remove('agent-filled'), 2000);
+                            }
+                            
+                            // Trigger proactive update
+                            simulateWhatsApp(i18nDict[currentLang]['wa_agent_init']);
+                        }, 3000);
+                    }
+                }
+                
+                let formatted = escapeHTML(displayText).replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
                 addMessage(formatted, 'bot', true);
-                speakText(text); // Speak the AI response
+                speakText(displayText); // Speak the AI response
             };
 
             if (!geminiApiKey) {
@@ -1346,8 +1445,8 @@
         };
 
         // --- WhatsApp Simulation Logic ---
-        function simulateWhatsApp() {
-            const msg = i18nDict[currentLang]['wa_body'];
+        function simulateWhatsApp(customMsg = null) {
+            const msg = customMsg || i18nDict[currentLang]['wa_body'];
             document.getElementById('wa-msg').innerText = msg;
             
             const toast = document.getElementById('whatsapp-toast');
