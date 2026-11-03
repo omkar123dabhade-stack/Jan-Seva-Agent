@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Citizen Services Agent (Jan Seva)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        gov: {
+                            blue: '#1e3a8a', // Deep trustworthy blue
+                            lightBlue: '#eff6ff',
+                            saffron: '#f97316', // Indian accent color
+                            green: '#15803d',
+                            gray: '#f3f4f6'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for chat */
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 10px;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .typing-indicator span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #64748b;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        .tricolor-border {
+            background: linear-gradient(to right, #ff9933, #ffffff, #138808);
+            height: 4px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col">
+    <div class="tricolor-border"></div>
+    <!-- Header / Navigation -->
+    <header class="bg-gov-blue text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo & Brand -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('home')">
+                    <div class="bg-white p-2 rounded-full">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="Gov Logo" class="h-8 w-8 object-contain">
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold leading-tight">Jan Seva Agent</h1>
+                        <p class="text-xs text-blue-200">Digital Citizen Services</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex space-x-6 items-center">
+                    <button onclick="switchView('chat')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-comments mr-2"></i>Ask Agent</button>
+                    <button onclick="switchView('schemes')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-list-alt mr-2"></i>Schemes</button>
+                    <button onclick="switchView('apply')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-file-signature mr-2"></i>Apply</button>
+                    <button onclick="switchView('track')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-search-location mr-2"></i>Track Status</button>
+                    
+                    <!-- Language Selector -->
+                    <div class="relative ml-4">
+                        <select id="lang-select" onchange="changeLanguage()" class="bg-blue-800 text-white text-sm rounded-md px-3 py-1 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-gov-saffron appearance-none pr-8">
+                            <option value="en">English</option>
+                            <option value="hi">हिंदी (Hindi)</option>
+                            <option value="mr">मराठी (Marathi)</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-xs pointer-events-none"></i>
+                    </div>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-white text-2xl" id="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Nav Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-blue-900 px-4 py-3 space-y-3 shadow-inner">
+            <button onclick="switchView('chat'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-comments mr-3"></i>Ask Agent</button>
+            <button onclick="switchView('schemes'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-list-alt mr-3"></i>Schemes Directory</button>
+            <button onclick="switchView('apply'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-file-signature mr-3"></i>Apply for Services</button>
+            <button onclick="switchView('track'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-search-location mr-3"></i>Track Request</button>
+            <div class="pt-2 border-t border-blue-800">
+                <label class="text-xs text-blue-300 block mb-1">Select Language:</label>
+                <select id="mobile-lang-select" onchange="document.getElementById('lang-select').value=this.value; changeLanguage(); toggleMobileMenu();" class="bg-blue-800 text-white text-sm rounded w-full px-2 py-2 border border-blue-700 focus:outline-none">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="mr">मराठी (Marathi)</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-6xl">
+        
+        <!-- ==================== HOME VIEW ==================== -->
+        <section id="view-home" class="view-section fade-in">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4" id="home-title">Welcome to Jan Seva Digital Portal</h2>
+                <p class="text-lg text-gray-600 mb-8" id="home-subtitle">Your one-stop AI assistant for government schemes, document applications, and service tracking.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div onclick="switchView('chat')" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-gov-saffron transition-all cursor-pointer group">
+                        <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
+                            <i class="fas fa-robot text-2xl text-gov-blue"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-2">Ask AI Agent</h3>
+                        <p class="text-sm text-gray-500">Get answers in your regional language instantly.</p>
+                    </div>
+                    <div onclick="switchView('schemes')" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-gov-saffron transition-all cursor-pointer group">
+                        <div class="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-100 transition-colors">
+                            <i class="fas fa-book-open text-2xl text-gov-saffron"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-2">Schemes Directory</h3>
+                        <p class="text-sm text-gray-500">Browse official PM-JAY, PM-KISAN & more.</p>
+                    </div>
+                    <div onclick="switchView('apply')" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-gov-green transition-all cursor-pointer group">
+                        <div class="bg-green-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-100 transition-colors">
+                            <i class="fas fa-edit text-2xl text-gov-green"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-2">Apply Online</h3>
+                        <p class="text-sm text-gray-500">Step-by-step guided application and document upload.</p>
+                    </div>
+                    <div onclick="switchView('track')" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-400 transition-all cursor-pointer group">
+                        <div class="bg-purple-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-100 transition-colors">
+                            <i class="fas fa-map-marker-alt text-2xl text-purple-600"></i>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-2">Track Status</h3>
+                        <p class="text-sm text-gray-500">Check live status of your submitted applications.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-blue-50 rounded-2xl p-8 border border-blue-100 flex flex-col md:flex-row items-center justify-between shadow-sm">
+                <div class="md:w-2/3 mb-6 md:mb-0">
+                    <h3 class="text-2xl font-bold text-gov-blue mb-2">Need immediate assistance?</h3>
+                    <p class="text-gray-600 mb-4">Our AI Agent can converse in English, Hindi, and Marathi. Ask about taxes, pensions, or how to apply for a Domicile certificate.</p>
+                    <button onclick="switchView('chat')" class="bg-gov-blue text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors shadow-sm">Start Chat Now <i class="fas fa-arrow-right ml-2"></i></button>
+                </div>
+                <div class="md:w-1/3 flex justify-center">
+                    <img src="https://placehold.co/200x200/eff6ff/1e3a8a?text=AI+Agent&font=Montserrat" alt="AI Agent" class="rounded-full shadow-md border-4 border-white h-40 w-40 object-cover">
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CHATBOT VIEW ==================== -->
+        <section id="view-chat" class="view-section hidden h-[75vh] flex flex-col max-w-4xl mx-auto fade-in bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+            <!-- Chat Header -->
+            <div class="bg-gov-blue text-white p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <img src="https://placehold.co/100x100/ffffff/1e3a8a?text=Bot" alt="Agent" class="w-10 h-10 rounded-full border-2 border-white">
+                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-gov-blue rounded-full"></span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Seva Sahayak (AI Agent)</h3>
+                        <p class="text-xs text-blue-200">Online | Ready to help</p>
+                    </div>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="p-2 hover:bg-blue-800 rounded-full transition-colors" title="Voice Input (Mock)"><i class="fas fa-microphone"></i></button>
+                    <button onclick="switchView('home')" class="p-2 hover:bg-blue-800 rounded-full transition-colors" title="Close Chat"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            
+            <!-- Chat Messages Area -->
+            <div id="chat-messages" class="flex-grow p-4 overflow-y-auto chat-scroll bg-gray-50 flex flex-col space-y-4">
+                <!-- Welcome Message (Injected via JS based on language) -->
+            </div>
+
+            <!-- Chat Input Area -->
+            <div class="p-4 bg-white border-t border-gray-200">
+                <form id="chat-form" onsubmit="handleChatSubmit(event)" class="flex items-center space-x-2">
+                    <div class="relative flex-grow">
+                        <input type="text" id="chat-input" placeholder="Type your query here... (e.g., 'Tell me about PM KISAN')" class="w-full bg-gray-100 border border-gray-300 text-gray-900 rounded-full focus:ring-2 focus:ring-gov-blue focus:border-gov-blue block pl-5 pr-12 py-3 sm:text-sm transition-all" required>
+                        <button type="button" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gov-blue">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                    </div>
+                    <button type="submit" class="bg-gov-blue text-white rounded-full p-3 w-12 h-12 flex items-center justify-center hover:bg-blue-800 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gov-blue">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+                <div class="mt-2 flex space-x-2 overflow-x-auto pb-1 chat-scroll" id="chat-suggestions">
+                    <span onclick="sendSuggestedMessage('Am I eligible for PM-KISAN?')" class="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 cursor-pointer hover:bg-blue-100 whitespace-nowrap">Am I eligible for PM-KISAN?</span>
+                    <span onclick="sendSuggestedMessage('How to link PAN and Aadhaar?')" class="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 cursor-pointer hover:bg-blue-100 whitespace-nowrap">How to link PAN and Aadhaar?</span>
+                    <span onclick="sendSuggestedMessage('Explain Ayushman Bharat')" class="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 cursor-pointer hover:bg-blue-100 whitespace-nowrap">Explain Ayushman Bharat</span>
+                    <span onclick="sendSuggestedMessage('Check Pension Status')" class="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 cursor-pointer hover:bg-blue-100 whitespace-nowrap">Check Pension Status</span>
+                    <span onclick="sendSuggestedMessage('Translate your previous response to Hindi')" class="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 cursor-pointer hover:bg-blue-100 whitespace-nowrap">Translate to Hindi</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SCHEMES DIRECTORY VIEW ==================== -->
+        <section id="view-schemes" class="view-section hidden fade-in">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Schemes Directory</h2>
+                    <p class="text-gray-600 mt-1">Information collected from official government portals.</p>
+                </div>
+                <div class="relative hidden sm:block">
+                    <input type="text" id="scheme-search" onkeyup="filterSchemes()" placeholder="Search schemes..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-gov-blue focus:border-gov-blue">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+            </div>
+
+            <!-- Schemes Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="schemes-grid">
+                <!-- Scheme Card 1 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="myscheme national portal schemes discovery">
+                    <div class="h-2 bg-blue-600 w-full"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold text-gov-blue leading-tight">MyScheme</h3>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Discovery</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">A National Platform that aims to offer one-stop search and discovery of the Government schemes.</p>
+                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                            <span class="text-xs text-gray-500"><i class="fas fa-search mr-1"></i>Govt of India</span>
+                            <a href="https://myscheme.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scheme Card 2 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="ayushman bharat pm-jay health">
+                    <div class="h-2 bg-gov-saffron w-full"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold text-gov-blue leading-tight">Ayushman Bharat (PM-JAY)</h3>
+                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Health</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">Provides health cover of Rs. 5 lakhs per family per year for secondary and tertiary care hospitalization.</p>
+                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                            <span class="text-xs text-gray-500"><i class="fas fa-shield-alt mr-1"></i>Ministry of Health</span>
+                            <a href="https://pmjay.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scheme Card 2 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pm kisan samman nidhi agriculture farmer">
+                    <div class="h-2 bg-green-600 w-full"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold text-gov-blue leading-tight">PM-KISAN Samman Nidhi</h3>
+                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Agriculture</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">Income support of Rs. 6,000/- per year in three equal installments to all landholding farmer families.</p>
+                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                            <span class="text-xs text-gray-500"><i class="fas fa-tractor mr-1"></i>Ministry of Agriculture</span>
+                            <a href="https://pmkisan.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scheme Card 3 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pm kisan samman nidhi agriculture farmer">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="national pension system nps finance retirement">
+                    <div class="h-2 bg-blue-500 w-full"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold text-gov-blue leading-tight">National Pension System (NPS)</h3>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Finance</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">A voluntary, defined contribution retirement savings scheme designed to enable systematic savings.</p>
+                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                            <span class="text-xs text-gray-500"><i class="fas fa-piggy-bank mr-1"></i>PFRDA</span>
+                            <a href="https://enps.nsdl.com/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scheme Card 4 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pradhan mantri awas yojana pmay housing">
+                    <div class="h-2 bg-pink-500 w-full"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold text-gov-blue leading-tight">PM Awas Yojana (PMAY)</h3>
+                            <span class="bg-pink-100 text-pink-800 text-xs font-semibold px-2.5 py-0.5 rounded">Housing</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">Housing for All scheme aiming to provide affordable housing to the urban and rural poor.</p>
+                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                            <span class="text-xs text-gray-500"><i class="fas fa-home mr-1"></i>MoHUA / MoRD</span>
+                            <a href="https://pmaymis.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scheme Card 5 -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pradhan mantri jan dhan yojana pmjdy finance inclusion">
+                    <div class="h-2 bg-yellow-500 w-full"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold text-gov-blue leading-tight">PM Jan Dhan Yojana</h3>
+                            <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Finance</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">National Mission for Financial Inclusion to ensure access to financial services like Banking, Credit, Insurance.</p>
+                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                            <span class="text-xs text-gray-500"><i class="fas fa-university mr-1"></i>Ministry of Finance</span>
+                            <a href="https://pmjdy.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Scheme Card 6 -->
+                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="umang app services mobile">
+                    <div class="h-2 bg-teal-500 w-full"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold text-gov-blue leading-tight">UMANG App</h3>
+                            <span class="bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded">Services</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">Unified Mobile Application for New-age Governance, providing a single platform for all Indian Citizens to access pan India e-Gov services.</p>
+                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                            <span class="text-xs text-gray-500"><i class="fas fa-layer-group mr-1"></i>MeitY</span>
+                            <a href="https://web.umang.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty state for search -->
+            <div id="no-schemes-msg" class="hidden text-center py-12">
+                <i class="fas fa-search-minus text-4xl text-gray-300 mb-3"></i>
+                <h3 class="text-lg font-medium text-gray-900">No schemes found</h3>
+                <p class="text-gray-500">Try adjusting your search terms.</p>
+            </div>
+        </section>
+
+        <!-- ==================== APPLY / FORM ASSISTANT VIEW ==================== -->
+        <section id="view-apply" class="view-section hidden fade-in max-w-3xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">Certificate Application Assistant</h2>
+                <p class="text-gray-600 mt-1">Guided process to apply for Domicile / Income / Caste Certificates.</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 md:p-8 relative">
+                
+                <!-- Progress Bar -->
+                <div class="mb-8">
+                    <div class="flex items-center justify-between relative">
+                        <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-200 z-0"></div>
+                        <div class="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-gov-blue z-0 transition-all duration-300" id="form-progress" style="width: 0%;"></div>
+                        
+                        <div class="relative z-10 flex flex-col items-center step-indicator active" data-step="1">
+                            <div class="w-8 h-8 rounded-full bg-gov-blue text-white flex items-center justify-center font-bold shadow-md ring-4 ring-white" id="indicator-1">1</div>
+                            <span class="text-xs font-semibold mt-2 text-gov-blue">Service Details</span>
+                        </div>
+                        <div class="relative z-10 flex flex-col items-center step-indicator" data-step="2">
+                            <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold shadow-md ring-4 ring-white" id="indicator-2">2</div>
+                            <span class="text-xs font-medium mt-2 text-gray-500">Applicant Info</span>
+                        </div>
+                        <div class="relative z-10 flex flex-col items-center step-indicator" data-step="3">
+                            <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold shadow-md ring-4 ring-white" id="indicator-3">3</div>
+                            <span class="text-xs font-medium mt-2 text-gray-500">Documents</span>
+                        </div>
+                        <div class="relative z-10 flex flex-col items-center step-indicator" data-step="4">
+                            <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold shadow-md ring-4 ring-white" id="indicator-4"><i class="fas fa-check"></i></div>
+                            <span class="text-xs font-medium mt-2 text-gray-500">Review</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Container -->
+                <form id="application-form" onsubmit="return false;">
+                    
+                    <!-- Step 1: Service Selection -->
+                    <div id="step-1" class="form-step">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Select Service</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">State <span class="text-red-500">*</span></label>
+                                <select class="w-full border-gray-300 rounded-md shadow-sm focus:border-gov-blue focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 border" required>
+                                    <option value="">-- Select State --</option>
+                                    <option value="MH">Maharashtra</option>
+                                    <option value="DL">Delhi</option>
+                                    <option value="UP">Uttar Pradesh</option>
+                                    <option value="KA">Karnataka</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Certificate Type <span class="text-red-500">*</span></label>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
+                                    <label class="border rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-gov-blue transition-colors flex items-center radio-card">
+                                        <input type="radio" name="cert_type" value="domicile" class="text-gov-blue focus:ring-gov-blue mr-3" required>
+                                        <span class="font-medium text-gray-800">Domicile Certificate</span>
+                                    </label>
+                                    <label class="border rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-gov-blue transition-colors flex items-center radio-card">
+                                        <input type="radio" name="cert_type" value="income" class="text-gov-blue focus:ring-gov-blue mr-3">
+                                        <span class="font-medium text-gray-800">Income Certificate</span>
+                                    </label>
+                                    <label class="border rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-gov-blue transition-colors flex items-center radio-card">
+                                        <input type="radio" name="cert_type" value="caste" class="text-gov-blue focus:ring-gov-blue mr-3">
+                                        <span class="font-medium text-gray-800">Caste Certificate</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Personal Info -->
+                    <div id="step-2" class="form-step hidden">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Applicant Information</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="col-span-1 md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name (as per Aadhaar) <span class="text-red-500">*</span></label>
+                                <input type="text" id="app-name" class="w-full border-gray-300 rounded-md shadow-sm focus:border-gov-blue focus:ring focus:ring-blue-200 p-2 border" placeholder="e.g. Rahul Sharma" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number <span class="text-red-500">*</span></label>
+                                <div class="flex">
+                                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">+91</span>
+                                    <input type="tel" pattern="[0-9]{10}" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:border-gov-blue focus:ring-gov-blue" placeholder="9876543210" required>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth <span class="text-red-500">*</span></label>
+                                <input type="date" class="w-full border-gray-300 rounded-md shadow-sm focus:border-gov-blue focus:ring focus:ring-blue-200 p-2 border" required>
+                            </div>
+                            <div class="col-span-1 md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Current Address <span class="text-red-500">*</span></label>
+                                <textarea rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:border-gov-blue focus:ring focus:ring-blue-200 p-2 border" placeholder="House No, Street, Village/City" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Document Upload -->
+                    <div id="step-3" class="form-step hidden">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Upload Documents</h3>
+                        <p class="text-sm text-gray-500 mb-4">Please upload clear copies of the required documents. Max size 2MB per file (PDF/JPG/PNG).</p>
+                        
+                        <div class="space-y-4">
+                            <!-- Doc 1 -->
+                            <div class="border border-dashed border-gray-400 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-id-card text-2xl text-gray-400 mr-4"></i>
+                                        <div>
+                                            <h4 class="font-medium text-gray-800">Proof of Identity <span class="text-red-500">*</span></h4>
+                                            <p class="text-xs text-gray-500">Aadhaar Card / Voter ID / PAN Card</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative">
+                                        <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileUpload(this, 'id-upload-status')">
+                                        <button type="button" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded shadow-sm text-sm hover:bg-gray-50">Choose File</button>
+                                    </div>
+                                </div>
+                                <div id="id-upload-status" class="mt-2 text-sm text-green-600 hidden"><i class="fas fa-check-circle mr-1"></i> Document attached</div>
+                            </div>
+
+                            <!-- Doc 2 -->
+                            <div class="border border-dashed border-gray-400 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-home text-2xl text-gray-400 mr-4"></i>
+                                        <div>
+                                            <h4 class="font-medium text-gray-800">Proof of Address <span class="text-red-500">*</span></h4>
+                                            <p class="text-xs text-gray-500">Electricity Bill / Ration Card / Passport</p>
+                                        </div>
+                                    </div>
+                                    <div class="relative">
+                                        <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileUpload(this, 'addr-upload-status')">
+                                        <button type="button" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded shadow-sm text-sm hover:bg-gray-50">Choose File</button>
+                                    </div>
+                                </div>
+                                <div id="addr-upload-status" class="mt-2 text-sm text-green-600 hidden"><i class="fas fa-check-circle mr-1"></i> Document attached</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 p-3 bg-blue-50 rounded text-sm text-blue-800 flex items-start">
+                            <i class="fas fa-info-circle mt-0.5 mr-2"></i>
+                            <p>Information collected via this portal is securely verified with official state databases via API before final processing.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Review & Submit -->
+                    <div id="step-4" class="form-step hidden">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-clipboard-check text-3xl text-green-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800">Review Application</h3>
+                            <p class="text-gray-600">Please confirm your details before final submission.</p>
+                        </div>
+
+                        <div class="bg-gray-50 rounded border border-gray-200 p-4 mb-6">
+                            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 text-sm">
+                                <div>
+                                    <dt class="text-gray-500 font-medium">Applicant Name</dt>
+                                    <dd class="text-gray-900 font-semibold" id="review-name">-</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-gray-500 font-medium">Service Requested</dt>
+                                    <dd class="text-gray-900 font-semibold" id="review-service">Domicile Certificate</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-gray-500 font-medium">State</dt>
+                                    <dd class="text-gray-900 font-semibold">Selected State</dd>
+                                </div>
+                                <div>
+                                    <dt class="text-gray-500 font-medium">Documents</dt>
+                                    <dd class="text-green-600 font-semibold"><i class="fas fa-check mr-1"></i> Uploaded (2)</dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <div class="flex items-start mb-4">
+                            <div class="flex items-center h-5">
+                                <input id="declaration" type="checkbox" class="w-4 h-4 text-gov-blue border-gray-300 rounded focus:ring-gov-blue" required>
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="declaration" class="font-medium text-gray-700">Self Declaration</label>
+                                <p class="text-gray-500">I hereby declare that the information provided is true to the best of my knowledge. I understand false information may lead to rejection.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Navigation Buttons -->
+                    <div class="mt-8 flex justify-between pt-4 border-t border-gray-200">
+                        <button type="button" id="prev-btn" onclick="nextPrev(-1)" class="hidden bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors">Previous</button>
+                        <div class="flex-grow"></div>
+                        <button type="button" id="next-btn" onclick="nextPrev(1)" class="bg-gov-blue text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors shadow-sm">Next Step <i class="fas fa-arrow-right ml-2"></i></button>
+                        <button type="button" id="submit-btn" onclick="submitApplication()" class="hidden bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors shadow-sm"><i class="fas fa-check-circle mr-2"></i> Submit Application</button>
+                    </div>
+                </form>
+
+                <!-- Success Message (Hidden by default) -->
+                <div id="form-success" class="hidden text-center py-8 fade-in">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check text-4xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Application Submitted Successfully!</h3>
+                    <p class="text-gray-600 mb-6">Your request has been forwarded to the concerned department.</p>
+                    <div class="bg-blue-50 inline-block px-6 py-3 rounded-lg border border-blue-100 mb-8">
+                        <p class="text-sm text-gray-500 mb-1">Your Application Reference ID:</p>
+                        <p class="text-2xl font-bold text-gov-blue font-mono" id="generated-app-id">APP-9824-MH</p>
+                    </div>
+                    <div>
+                        <button onclick="switchView('track')" class="bg-gov-blue text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors mr-2">Track Status</button>
+                        <button onclick="resetForm()" class="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors">Apply Another</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==================== TRACKER VIEW ==================== -->
+        <section id="view-track" class="view-section hidden fade-in max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">Track Request Status</h2>
+                <p class="text-gray-600 mt-1">Enter your Application ID or Reference Number to get real-time updates.</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 md:p-10 mb-8">
+                <form onsubmit="trackApplication(event)" class="max-w-2xl mx-auto flex flex-col md:flex-row gap-4">
+                    <div class="flex-grow relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-fingerprint text-gray-400"></i>
+                        </div>
+                        <input type="text" id="tracking-id" class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-gov-blue focus:border-gov-blue text-lg uppercase" placeholder="e.g. APP-9824-MH" required>
+                    </div>
+                    <button type="submit" class="bg-gov-blue text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-800 transition-colors shadow-sm whitespace-nowrap flex items-center justify-center">
+                        <i class="fas fa-search mr-2"></i> Check Status
+                    </button>
+                </form>
+                <div class="text-center mt-3 text-sm text-gray-500">
+                    Try <span class="font-mono bg-gray-100 px-1 rounded cursor-pointer" onclick="document.getElementById('tracking-id').value='APP-9824-MH'">APP-9824-MH</span> or <span class="font-mono bg-gray-100 px-1 rounded cursor-pointer" onclick="document.getElementById('tracking-id').value='PEN-1234'">PEN-1234</span> for demo.
+                </div>
+            </div>
+
+            <!-- Tracking Result Area -->
+            <div id="tracking-result" class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-10 fade-in">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 border-b pb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800" id="tr-service-name">Domicile Certificate</h3>
+                        <p class="text-gray-500 text-sm mt-1">Application ID: <span class="font-mono font-medium text-gov-blue" id="tr-app-id">APP-9824-MH</span></p>
+                        <p class="text-gray-500 text-sm">Applicant: <span class="font-medium text-gray-700" id="tr-applicant">Rahul Sharma</span></p>
+                    </div>
+                    <div class="mt-4 md:mt-0">
+                        <span class="bg-blue-100 text-blue-800 text-sm font-bold px-4 py-1.5 rounded-full border border-blue-200 inline-flex items-center" id="tr-status-badge">
+                            <span class="w-2 h-2 rounded-full bg-blue-500 mr-2 animate-pulse"></span> In Progress
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Vertical Timeline -->
+                <div class="relative pl-8 sm:pl-32 py-6">
+                    <!-- Vertical Line -->
+                    <div class="absolute left-[23px] sm:left-[107px] top-0 bottom-0 w-0.5 bg-gray-200"></div>
+
+                    <!-- Step 1 (Completed) -->
+                    <div class="relative mb-8">
+                        <div class="hidden sm:block absolute left-[-110px] text-right w-20 text-sm text-gray-500 font-medium pt-1">Oct 12, 10:00 AM</div>
+                        <div class="absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow flex items-center justify-center">
+                            <i class="fas fa-check text-white text-xs"></i>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 ml-4 sm:ml-6">
+                            <h4 class="font-bold text-gray-800">Application Submitted</h4>
+                            <p class="text-sm text-gray-600 mt-1">Application received online via Jan Seva Portal.</p>
+                            <p class="text-xs text-gray-400 sm:hidden mt-2">Oct 12, 2026 - 10:00 AM</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 (Completed) -->
+                    <div class="relative mb-8">
+                        <div class="hidden sm:block absolute left-[-110px] text-right w-20 text-sm text-gray-500 font-medium pt-1">Oct 14, 02:30 PM</div>
+                        <div class="absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow flex items-center justify-center">
+                            <i class="fas fa-check text-white text-xs"></i>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 ml-4 sm:ml-6">
+                            <h4 class="font-bold text-gray-800">Document Verification</h4>
+                            <p class="text-sm text-gray-600 mt-1">Identity and address proof verified by Talathi office.</p>
+                            <p class="text-xs text-gray-400 sm:hidden mt-2">Oct 14, 2026 - 02:30 PM</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 (Current) -->
+                    <div class="relative mb-8" id="tr-step-3">
+                        <div class="hidden sm:block absolute left-[-110px] text-right w-20 text-sm text-gov-blue font-bold pt-1">Current</div>
+                        <div class="absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-gov-blue rounded-full border-4 border-white shadow flex items-center justify-center ring-2 ring-blue-200">
+                            <div class="w-2 h-2 bg-white rounded-full"></div>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 ml-4 sm:ml-6 shadow-sm">
+                            <h4 class="font-bold text-gov-blue">Processing by Tahsildar</h4>
+                            <p class="text-sm text-gray-700 mt-1">Application is under review for final approval by Sub-Divisional Officer.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 (Pending) -->
+                    <div class="relative" id="tr-step-4">
+                        <div class="absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-gray-200 rounded-full border-4 border-white shadow flex items-center justify-center"></div>
+                        <div class="p-4 ml-4 sm:ml-6 opacity-50">
+                            <h4 class="font-bold text-gray-500">Certificate Generation</h4>
+                            <p class="text-sm text-gray-500 mt-1">Digital certificate will be generated and sent via SMS/DigiLocker.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                 <!-- Scheme Card 7 -->
+                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="digilocker digital india documents">
+                    <div class="h-2 bg-purple-500 w-full"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold text-gov-blue leading-tight">DigiLocker</h3>
+                            <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">Digital India</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">A flagship initiative of Digital India aimed at 'Digital Empowerment' of citizens by providing access to authentic digital documents.</p>
+                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                            <span class="text-xs text-gray-500"><i class="fas fa-mobile-alt mr-1"></i>MeitY</span>
+                            <a href="https://www.digilocker.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                 <!-- Scheme Card 8 -->
+                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pradhan mantri mudra yojana pmmy business loans">
+                    <div class="h-2 bg-red-500 w-full"></div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold text-gov-blue leading-tight">PM Mudra Yojana</h3>
+                            <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">Business</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">Provides loans up to 10 lakhs to the non-corporate, non-farm small/micro enterprises.</p>
+                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                            <span class="text-xs text-gray-500"><i class="fas fa-briefcase mr-1"></i>Ministry of Finance</span>
+                            <a href="https://mudra.org.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Empty state for search -->
+                <div class="mt-6 pt-6 border-t border-gray-100 text-center">
+                    <button class="text-gov-blue hover:underline text-sm font-medium"><i class="fab fa-whatsapp mr-1 text-green-500"></i> Subscribe for WhatsApp Updates</button>
+                </div>
+            </div>
+
+            <!-- Not Found State -->
+            <div id="tracking-error" class="hidden text-center py-10 fade-in bg-white rounded-xl shadow-sm border border-red-100">
+                <i class="fas fa-exclamation-circle text-4xl text-red-400 mb-3"></i>
+                <h3 class="text-lg font-medium text-gray-900">Application Not Found</h3>
+                <p class="text-gray-500 mt-2">We couldn't find any records for that ID. Please check and try again.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-8 mt-auto">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="Gov Logo" class="h-6 w-6 object-contain bg-white rounded-full p-0.5">
+                        <h3 class="text-white font-bold text-lg">Jan Seva Digital Portal</h3>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-4">A unified initiative to provide seamless, AI-assisted citizen services and scheme information across India.</p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Quick Links</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">National Portal of India (india.gov.in)</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Digital India</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">MyGov</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">RTI Online</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Contact & Support</h4>
+                    <ul class="space-y-2 text-sm mb-4">
+                        <li><i class="fas fa-phone-alt mr-2 w-4"></i> Toll Free: 1800-111-222</li>
+                        <li><i class="fas fa-envelope mr-2 w-4"></i> support@janseva.gov.in</li>
+                        <li><i class="fab fa-whatsapp mr-2 w-4"></i> +91 9013151515 (AI Agent)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+                <p>&copy; 2026 Government Citizen Services. All rights reserved.</p>
+                <div class="space-x-4 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white">Privacy Policy</a>
+                    <a href="#" class="hover:text-white">Terms of Use</a>
+                    <a href="#" class="hover:text-white">Accessibility Statement</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Modal for Alerts/Messages -->
+    <div id="custom-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300" id="modal-content">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4" id="modal-icon-container">
+                    <i class="fas fa-info-circle text-gov-blue text-xl" id="modal-icon"></i>
+                </div>
+                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Notification</h3>
+                <div class="mt-2">
+                    <p class="text-sm text-gray-500" id="modal-message">Message goes here.</p>
+                </div>
+                <div class="mt-6">
+                    <button type="button" onclick="closeModal()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gov-blue text-base font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gov-blue sm:text-sm">
+                        Okay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Navigation & View Logic ---
+        function switchView(viewId) {
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.add('hidden');
+            });
+            
+            // Show requested view
+            document.getElementById('view-' + viewId).classList.remove('hidden');
+            
+            // Update active state in nav
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-gov-saffron');
+            });
+            // Rough match for active state coloring (desktop only)
+            event && event.currentTarget && event.currentTarget.classList && event.currentTarget.classList.add('text-gov-saffron');
+
+            // Scroll to top
+            window.scrollTo(0, 0);
+
+            // Special initializations
+            if(viewId === 'chat' && document.getElementById('chat-messages').children.length === 0) {
+                initChat();
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- Language & Content Customization (Mock) ---
+        const translations = {
+            en: {
+                greeting: "Namaste! I am your Jan Seva Digital Assistant. How can I help you today with Schemes, Certificates, or Taxes?",
+                typing: "Agent is typing...",
+                notUnderstood: "I'm still learning. Could you rephrase that? Try asking about 'PM KISAN', 'Pension', or 'Apply for Domicile'."
+            },
+            hi: {
+                greeting: "नमस्ते! मैं आपका जन सेवा डिजिटल सहायक हूँ। आज मैं योजनाओं, प्रमाणपत्रों या करों के साथ आपकी कैसे मदद कर सकता हूँ?",
+                typing: "एजेंट टाइप कर रहा है...",
+                notUnderstood: "मुझे समझ नहीं आया। क्या आप इसे फिर से कह सकते हैं? 'पीएम किसान', 'पेंशन' या 'प्रमाणपत्र' के बारे में पूछने का प्रयास करें।"
+            },
+            mr: {
+                greeting: "नमस्कार! मी तुमचा जन सेवा डिजिटल सहाय्यक आहे. मी तुम्हाला योजना, प्रमाणपत्रे किंवा करांबद्दल कशी मदत करू शकतो?",
+                typing: "एजंट टाइप करत आहे...",
+                notUnderstood: "मला समजले नाही. आपण 'पीएम किसान', 'पेन्शन' किंवा 'प्रमाणपत्र' बद्दल विचारण्याचा प्रयत्न करू शकता."
+            }
+        };
+
+        let currentLang = 'en';
+
+        // Gemini AI Agent State
+        let chatHistory = [];
+        const systemPrompt = "Act as a helpful Indian Citizen Services Agent. Answer queries about government schemes, taxes, pensions, and certificates. Provide accurate, official information based on India.gov.in and MyScheme. Respond in English or regional languages if requested. Format your response cleanly.";
+        const geminiApiKey = ""; // Required for Canvas runtime
+
+        function changeLanguage() {
+            currentLang = document.getElementById('lang-select').value;
+            // Clear chat and re-init to show new greeting
+            const chatMessages = document.getElementById('chat-messages');
+            if(chatMessages.children.length > 0) {
+                chatMessages.innerHTML = '';
+                chatHistory = []; // Reset history on language change
+                initChat();
+            }
+            
+            // Show small toast/modal
+            showModal('Language Changed', 'Interface language updated to ' + document.querySelector(`#lang-select option[value="${currentLang}"]`).text, 'info');
+        }
+
+        // --- Chatbot Logic ---
+        function initChat() {
+            addMessage(translations[currentLang].greeting, 'bot');
+        }
+
+        function handleChatSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if(!msg) return;
+            
+            // Add user message
+            addMessage(msg, 'user');
+            input.value = '';
+            
+            // Process reply
+            processBotReply(msg.toLowerCase());
+        }
+
+        function sendSuggestedMessage(msg) {
+            document.getElementById('chat-input').value = msg;
+            document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+        }
+
+        function addMessage(text, sender, isHTML = false) {
+            const container = document.getElementById('chat-messages');
+            const msgDiv = document.createElement('div');
+            
+            if(sender === 'user') {
+                msgDiv.className = 'flex justify-end fade-in';
+                msgDiv.innerHTML = `
+                    <div class="bg-gov-blue text-white rounded-2xl rounded-tr-sm px-4 py-3 max-w-[80%] shadow-sm text-sm">
+                        ${escapeHTML(text)}
+                    </div>
+                `;
+            } else if (sender === 'bot') {
+                msgDiv.className = 'flex items-start space-x-3 fade-in';
+                const content = isHTML ? text : escapeHTML(text);
+                msgDiv.innerHTML = `
+                    <img src="https://placehold.co/100x100/ffffff/1e3a8a?text=Bot" class="w-8 h-8 rounded-full border border-gray-200 shadow-sm mt-1 flex-shrink-0">
+                    <div class="bg-white border border-gray-200 text-gray-800 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] shadow-sm text-sm leading-relaxed">
+                        ${content}
+                    </div>
+                `;
+            } else if (sender === 'typing') {
+                msgDiv.id = 'typing-indicator';
+                msgDiv.className = 'flex items-start space-x-3 fade-in';
+                msgDiv.innerHTML = `
+                    <img src="https://placehold.co/100x100/ffffff/1e3a8a?text=Bot" class="w-8 h-8 rounded-full border border-gray-200 shadow-sm mt-1">
+                    <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-4 shadow-sm typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                `;
+            }
+            
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const el = document.getElementById('typing-indicator');
+            if(el) el.remove();
+        }
+
+        function formatMarkdown(text) {
+            // Simple markdown formatter for bold and lists
+            let formatted = escapeHTML(text);
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'); // Bold
+            formatted = formatted.replace(/\*(.*?)\*/g, '<i>$1</i>'); // Italic
+            formatted = formatted.replace(/\n/g, '<br>'); // Line breaks
+            
+            // basic bullet points
+            formatted = formatted.replace(/<br>\* /g, '<br>• ');
+            formatted = formatted.replace(/<br>- /g, '<br>• ');
+            
+            return formatted;
+        }
+
+        async function processBotReply(userMsg) {
+            // Show typing indicator
+            addMessage('', 'typing');
+            
+            // Add user turn to history
+            chatHistory.push({ role: "user", parts: [{ text: userMsg }] });
+            
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${geminiApiKey}`;
+            
+            const payload = {
+                contents: chatHistory,
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                removeTypingIndicator();
+
+                if (result.candidates && result.candidates.length > 0 && result.candidates[0].content) {
+                    const botText = result.candidates[0].content.parts[0].text;
+                    
+                    // Add bot turn to history
+                    chatHistory.push(result.candidates[0].content);
+                    
+                    addMessage(formatMarkdown(botText), 'bot', true);
+                } else {
+                    addMessage("I am having trouble connecting to the official database. Please try again in a moment.", 'bot');
+                }
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                removeTypingIndicator();
+                addMessage("I'm currently unable to process your request due to a network error. Please try again.", 'bot');
+            }
+        }
+
+        // --- Schemes Search Logic ---
+        function filterSchemes() {
+            const input = document.getElementById('scheme-search').value.toLowerCase();
+            const cards = document.querySelectorAll('.scheme-card');
+            let found = false;
+
+            cards.forEach(card => {
+                const titleData = card.getAttribute('data-title');
+                if(titleData.includes(input)) {
+                    card.style.display = 'block';
+                    found = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if(!found) {
+                document.getElementById('no-schemes-msg').classList.remove('hidden');
+            } else {
+                document.getElementById('no-schemes-msg').classList.add('hidden');
+            }
+        }
+
+        // --- Multi-Step Form Logic ---
+        let currentTab = 1;
+        const totalTabs = 4;
+
+        function showTab(n) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.form-step');
+            tabs.forEach(tab => tab.classList.add('hidden'));
+            
+            // Show current tab
+            document.getElementById('step-' + n).classList.remove('hidden');
+            
+            // Update buttons
+            if (n === 1) {
+                document.getElementById('prev-btn').classList.add('hidden');
+            } else {
+                document.getElementById('prev-btn').classList.remove('hidden');
+            }
+            
+            if (n === totalTabs) {
+                document.getElementById('next-btn').classList.add('hidden');
+                document.getElementById('submit-btn').classList.remove('hidden');
+                populateReview();
+            } else {
+                document.getElementById('next-btn').classList.remove('hidden');
+                document.getElementById('submit-btn').classList.add('hidden');
+            }
+            
+            updateProgress(n);
+        }
+
+        function updateProgress(n) {
+            // Update bar width
+            const percent = ((n - 1) / (totalTabs - 1)) * 100;
+            document.getElementById('form-progress').style.width = percent + '%';
+            
+            // Update indicators
+            for (let i = 1; i <= totalTabs; i++) {
+                const indicator = document.getElementById('indicator-' + i);
+                const parent = indicator.parentElement;
+                
+                if (i < n) {
+                    // Completed
+                    indicator.className = 'w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shadow-md ring-4 ring-white transition-colors duration-300';
+                    indicator.innerHTML = '<i class="fas fa-check"></i>';
+                    parent.querySelector('span').className = 'text-xs font-semibold mt-2 text-green-600 transition-colors duration-300';
+                } else if (i === n) {
+                    // Current
+                    indicator.className = 'w-8 h-8 rounded-full bg-gov-blue text-white flex items-center justify-center font-bold shadow-md ring-4 ring-white transition-colors duration-300';
+                    indicator.innerHTML = i === 4 ? '<i class="fas fa-check"></i>' : i;
+                    parent.querySelector('span').className = 'text-xs font-bold mt-2 text-gov-blue transition-colors duration-300';
+                } else {
+                    // Future
+                    indicator.className = 'w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold shadow-md ring-4 ring-white transition-colors duration-300';
+                    indicator.innerHTML = i === 4 ? '<i class="fas fa-check"></i>' : i;
+                    parent.querySelector('span').className = 'text-xs font-medium mt-2 text-gray-500 transition-colors duration-300';
+                }
+            }
+        }
+
+        function nextPrev(n) {
+            // Basic validation
+            if (n === 1 && !validateForm(currentTab)) return false;
+            
+            currentTab = currentTab + n;
+            showTab(currentTab);
+        }
+
+        function validateForm(tabNum) {
+            // Simple validation simulation
+            const tab = document.getElementById('step-' + tabNum);
+            const inputs = tab.querySelectorAll('input[required], select[required], textarea[required]');
+            let valid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value) {
+                    valid = false;
+                    input.classList.add('border-red-500', 'ring-red-200');
+                } else {
+                    input.classList.remove('border-red-500', 'ring-red-200');
+                }
+            });
+
+            // Radio button validation for step 1
+            if(tabNum === 1) {
+                const radios = document.getElementsByName('cert_type');
+                let radioValid = false;
+                radios.forEach(r => { if(r.checked) radioValid = true; });
+                if(!radioValid) {
+                    showModal('Selection Required', 'Please select a Certificate Type.', 'warning');
+                    return false;
+                }
+            }
+
+            if (!valid) {
+                showModal('Missing Fields', 'Please fill all required fields marked with *', 'warning');
+            }
+            return valid;
+        }
+
+        function handleFileUpload(input, statusId) {
+            if(input.files && input.files[0]) {
+                const el = document.getElementById(statusId);
+                el.classList.remove('hidden');
+                el.innerHTML = `<i class="fas fa-check-circle mr-1"></i> ${input.files[0].name} attached`;
+            }
+        }
+
+        function populateReview() {
+            const name = document.getElementById('app-name').value || 'Not provided';
+            
+            // Get selected radio
+            const radios = document.getElementsByName('cert_type');
+            let service = '';
+            for(let i=0; i<radios.length; i++){
+                if(radios[i].checked) {
+                    service = radios[i].nextElementSibling.innerText;
+                    break;
+                }
+            }
+
+            document.getElementById('review-name').innerText = name;
+            document.getElementById('review-service').innerText = service;
+        }
+
+        function submitApplication() {
+            if(!document.getElementById('declaration').checked) {
+                showModal('Declaration Required', 'Please check the self declaration box before submitting.', 'warning');
+                return;
+            }
+
+            // Show loading state on button
+            const btn = document.getElementById('submit-btn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                document.getElementById('application-form').classList.add('hidden');
+                document.getElementById('form-success').classList.remove('hidden');
+                
+                // Generate random ID
+                const randomId = 'APP-' + Math.floor(1000 + Math.random() * 9000) + '-MH';
+                document.getElementById('generated-app-id').innerText = randomId;
+            }, 1500);
+        }
+
+        function resetForm() {
+            document.getElementById('application-form').reset();
+            document.getElementById('application-form').classList.remove('hidden');
+            document.getElementById('form-success').classList.add('hidden');
+            
+            // Reset upload statuses
+            document.getElementById('id-upload-status').classList.add('hidden');
+            document.getElementById('addr-upload-status').classList.add('hidden');
+            
+            currentTab = 1;
+            showTab(1);
+        }
+
+        // --- Tracker Logic ---
+        function trackApplication(e) {
+            e.preventDefault();
+            const id = document.getElementById('tracking-id').value.trim().toUpperCase();
+            
+            const resultArea = document.getElementById('tracking-result');
+            const errorArea = document.getElementById('tracking-error');
+            
+            resultArea.classList.add('hidden');
+            errorArea.classList.add('hidden');
+            
+            // Show loading modal briefly
+            const submitBtn = e.target.querySelector('button');
+            const origText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            submitBtn.disabled = true;
+
+            setTimeout(() => {
+                submitBtn.innerHTML = origText;
+                submitBtn.disabled = false;
+
+                // Fake API Logic
+                if (id === 'APP-9824-MH') {
+                    // Show standard progress
+                    document.getElementById('tr-app-id').innerText = id;
+                    document.getElementById('tr-service-name').innerText = "Domicile Certificate";
+                    document.getElementById('tr-applicant').innerText = "Rahul Sharma";
+                    
+                    // Set UI state to In Progress (Step 3)
+                    setupTrackerUI(3);
+                    resultArea.classList.remove('hidden');
+                } else if (id === 'PEN-1234') {
+                    // Show completed progress
+                    document.getElementById('tr-app-id').innerText = id;
+                    document.getElementById('tr-service-name').innerText = "Old Age Pension";
+                    document.getElementById('tr-applicant').innerText = "Sunita Devi";
+                    
+                    // Set UI state to Completed (Step 4)
+                    setupTrackerUI(4);
+                    resultArea.classList.remove('hidden');
+                } else if (id.length > 5) {
+                    // Random generation for other valid looking IDs
+                    document.getElementById('tr-app-id').innerText = id;
+                    document.getElementById('tr-service-name').innerText = "General Service Request";
+                    document.getElementById('tr-applicant').innerText = "Citizen";
+                    
+                    setupTrackerUI(2); // Just received
+                    resultArea.classList.remove('hidden');
+                } else {
+                    errorArea.classList.remove('hidden');
+                }
+            }, 800);
+        }
+
+        function setupTrackerUI(currentStep) {
+            const statusBadge = document.getElementById('tr-status-badge');
+            
+            if(currentStep === 4) {
+                statusBadge.className = "bg-green-100 text-green-800 text-sm font-bold px-4 py-1.5 rounded-full border border-green-200 inline-flex items-center";
+                statusBadge.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Completed';
+                
+                // Update Step 3 visually
+                const s3 = document.getElementById('tr-step-3');
+                s3.querySelector('.absolute').className = "absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow flex items-center justify-center";
+                s3.querySelector('.absolute').innerHTML = '<i class="fas fa-check text-white text-xs"></i>';
+                s3.querySelector('.bg-blue-50').className = "bg-gray-50 p-4 rounded-lg border border-gray-100 ml-4 sm:ml-6";
+                s3.querySelector('h4').className = "font-bold text-gray-800";
+                
+                // Update Step 4 visually
+                const s4 = document.getElementById('tr-step-4');
+                s4.querySelector('.absolute').className = "absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow flex items-center justify-center";
+                s4.querySelector('.absolute').innerHTML = '<i class="fas fa-check text-white text-xs"></i>';
+                s4.querySelector('.opacity-50').className = "bg-green-50 p-4 rounded-lg border border-green-200 ml-4 sm:ml-6 shadow-sm";
+                s4.querySelector('h4').className = "font-bold text-green-700";
+
+            } else {
+                statusBadge.className = "bg-blue-100 text-blue-800 text-sm font-bold px-4 py-1.5 rounded-full border border-blue-200 inline-flex items-center";
+                statusBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-blue-500 mr-2 animate-pulse"></span> In Progress';
+                
+                // Reset to default intermediate state if needed...
+                // (For simplicity in this static demo, we assume the HTML default is step 3 active)
+            }
+        }
+
+        // --- Utilities ---
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+
+        // Custom Modal Logic (Replacing alert())
+        function showModal(title, message, type = 'info') {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            
+            const icon = document.getElementById('modal-icon');
+            const iconContainer = document.getElementById('modal-icon-container');
+            
+            if (type === 'warning') {
+                icon.className = 'fas fa-exclamation-triangle text-orange-500 text-xl';
+                iconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-orange-100 mb-4';
+            } else if (type === 'success') {
+                icon.className = 'fas fa-check text-green-600 text-xl';
+                iconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4';
+            } else {
+                icon.className = 'fas fa-info-circle text-gov-blue text-xl';
+                iconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4';
+            }
+
+            const modal = document.getElementById('custom-modal');
+            const content = document.getElementById('modal-content');
+            
+            modal.classList.remove('hidden');
+            // Trigger reflow
+            void modal.offsetWidth;
+            
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('custom-modal');
+            const content = document.getElementById('modal-content');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
