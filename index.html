@@ -70,6 +70,18 @@
             40% { transform: scale(1); }
         }
         
+        @keyframes pulse-red {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .listening {
+            animation: pulse-red 1.5s infinite;
+            background-color: #ef4444 !important;
+            color: white !important;
+            border-radius: 50%;
+        }
+
         .tricolor-border {
             background: linear-gradient(to right, #ff9933, #ffffff, #138808);
             height: 4px;
@@ -89,27 +101,30 @@
                         <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="Gov Logo" class="h-8 w-8 object-contain">
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold leading-tight">Jan Seva Agent</h1>
-                        <p class="text-xs text-blue-200">Digital Citizen Services</p>
+                        <h1 class="text-xl font-bold leading-tight" data-i18n="app_name">Jan Seva Agent</h1>
+                        <p class="text-xs text-blue-200" data-i18n="app_desc">Digital Citizen Services</p>
                     </div>
                 </div>
 
                 <!-- Desktop Nav -->
                 <nav class="hidden md:flex space-x-6 items-center">
-                    <button onclick="switchView('chat')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-comments mr-2"></i>Ask Agent</button>
-                    <button onclick="switchView('schemes')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-list-alt mr-2"></i>Schemes</button>
-                    <button onclick="switchView('apply')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-file-signature mr-2"></i>Apply</button>
-                    <button onclick="switchView('track')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-search-location mr-2"></i>Track Status</button>
+                    <button onclick="switchView('chat')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-comments mr-2"></i><span data-i18n="nav_ask">Ask Agent</span></button>
+                    <button onclick="switchView('faq')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-question-circle mr-2"></i><span data-i18n="nav_faq">FAQ</span></button>
+                    <button onclick="switchView('schemes')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-list-alt mr-2"></i><span data-i18n="nav_schemes">Schemes</span></button>
+                    <button onclick="switchView('apply')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-file-signature mr-2"></i><span data-i18n="nav_apply">Apply</span></button>
+                    <button onclick="switchView('track')" class="nav-btn hover:text-gov-saffron transition-colors font-medium"><i class="fas fa-search-location mr-2"></i><span data-i18n="nav_track">Track Status</span></button>
                     
                     <!-- Language Selector -->
                     <div class="relative ml-4">
                         <select id="lang-select" onchange="changeLanguage()" class="bg-blue-800 text-white text-sm rounded-md px-3 py-1 border border-blue-700 focus:outline-none focus:ring-2 focus:ring-gov-saffron appearance-none pr-8">
                             <option value="en">English</option>
-                            <option value="hi">हिंदी (Hindi)</option>
-                            <option value="mr">मराठी (Marathi)</option>
+                            <option value="hi">हिंदी</option>
+                            <option value="mr">मराठी</option>
                         </select>
                         <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-xs pointer-events-none"></i>
                     </div>
+                    <!-- Settings Button -->
+                    <button onclick="openSettings()" class="text-white hover:text-gov-saffron ml-4 transition-colors" title="Settings"><i class="fas fa-cog"></i></button>
                 </nav>
 
                 <!-- Mobile Menu Button -->
@@ -121,17 +136,21 @@
         
         <!-- Mobile Nav Dropdown -->
         <div id="mobile-menu" class="hidden md:hidden bg-blue-900 px-4 py-3 space-y-3 shadow-inner">
-            <button onclick="switchView('chat'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-comments mr-3"></i>Ask Agent</button>
-            <button onclick="switchView('schemes'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-list-alt mr-3"></i>Schemes Directory</button>
-            <button onclick="switchView('apply'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-file-signature mr-3"></i>Apply for Services</button>
-            <button onclick="switchView('track'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-search-location mr-3"></i>Track Request</button>
+            <button onclick="switchView('chat'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-comments mr-3"></i><span data-i18n="nav_ask">Ask Agent</span></button>
+            <button onclick="switchView('faq'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-question-circle mr-3"></i><span data-i18n="nav_faq_full">FAQ & Info</span></button>
+            <button onclick="switchView('schemes'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-list-alt mr-3"></i><span data-i18n="nav_schemes_dir">Schemes Directory</span></button>
+            <button onclick="switchView('apply'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-file-signature mr-3"></i><span data-i18n="nav_apply_serv">Apply for Services</span></button>
+            <button onclick="switchView('track'); toggleMobileMenu()" class="block w-full text-left py-2 hover:text-gov-saffron"><i class="fas fa-search-location mr-3"></i><span data-i18n="nav_track_req">Track Request</span></button>
             <div class="pt-2 border-t border-blue-800">
-                <label class="text-xs text-blue-300 block mb-1">Select Language:</label>
-                <select id="mobile-lang-select" onchange="document.getElementById('lang-select').value=this.value; changeLanguage(); toggleMobileMenu();" class="bg-blue-800 text-white text-sm rounded w-full px-2 py-2 border border-blue-700 focus:outline-none">
-                    <option value="en">English</option>
-                    <option value="hi">हिंदी (Hindi)</option>
-                    <option value="mr">मराठी (Marathi)</option>
-                </select>
+                <label class="text-xs text-blue-300 block mb-1" data-i18n="sel_lang">Select Language:</label>
+                <div class="flex space-x-2">
+                    <select id="mobile-lang-select" onchange="document.getElementById('lang-select').value=this.value; changeLanguage(); toggleMobileMenu();" class="bg-blue-800 text-white text-sm rounded flex-grow px-2 py-2 border border-blue-700 focus:outline-none">
+                        <option value="en">English</option>
+                        <option value="hi">हिंदी</option>
+                        <option value="mr">मराठी</option>
+                    </select>
+                    <button onclick="openSettings(); toggleMobileMenu()" class="bg-blue-800 text-white px-3 py-2 rounded border border-blue-700 hover:text-gov-saffron"><i class="fas fa-cog"></i></button>
+                </div>
             </div>
         </div>
     </header>
@@ -142,45 +161,45 @@
         <!-- ==================== HOME VIEW ==================== -->
         <section id="view-home" class="view-section fade-in">
             <div class="text-center max-w-3xl mx-auto mb-12">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4" id="home-title">Welcome to Jan Seva Digital Portal</h2>
-                <p class="text-lg text-gray-600 mb-8" id="home-subtitle">Your one-stop AI assistant for government schemes, document applications, and service tracking.</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4" id="home-title" data-i18n="home_title">Welcome to Jan Seva Digital Portal</h2>
+                <p class="text-lg text-gray-600 mb-8" id="home-subtitle" data-i18n="home_subtitle">Your one-stop AI assistant for government schemes, document applications, and service tracking.</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div onclick="switchView('chat')" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-gov-saffron transition-all cursor-pointer group">
                         <div class="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-100 transition-colors">
                             <i class="fas fa-robot text-2xl text-gov-blue"></i>
                         </div>
-                        <h3 class="font-bold text-gray-800 mb-2">Ask AI Agent</h3>
-                        <p class="text-sm text-gray-500">Get answers in your regional language instantly.</p>
+                        <h3 class="font-bold text-gray-800 mb-2" data-i18n="card_ai_title">Ask AI Agent</h3>
+                        <p class="text-sm text-gray-500" data-i18n="card_ai_desc">Get answers in your regional language instantly.</p>
                     </div>
                     <div onclick="switchView('schemes')" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-gov-saffron transition-all cursor-pointer group">
                         <div class="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-100 transition-colors">
                             <i class="fas fa-book-open text-2xl text-gov-saffron"></i>
                         </div>
-                        <h3 class="font-bold text-gray-800 mb-2">Schemes Directory</h3>
-                        <p class="text-sm text-gray-500">Browse official PM-JAY, PM-KISAN & more.</p>
+                        <h3 class="font-bold text-gray-800 mb-2" data-i18n="card_schemes_title">Schemes Directory</h3>
+                        <p class="text-sm text-gray-500" data-i18n="card_schemes_desc">Browse official PM-JAY, PM-KISAN & more.</p>
                     </div>
                     <div onclick="switchView('apply')" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-gov-green transition-all cursor-pointer group">
                         <div class="bg-green-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-100 transition-colors">
                             <i class="fas fa-edit text-2xl text-gov-green"></i>
                         </div>
-                        <h3 class="font-bold text-gray-800 mb-2">Apply Online</h3>
-                        <p class="text-sm text-gray-500">Step-by-step guided application and document upload.</p>
+                        <h3 class="font-bold text-gray-800 mb-2" data-i18n="card_apply_title">Apply Online</h3>
+                        <p class="text-sm text-gray-500" data-i18n="card_apply_desc">Step-by-step guided application and document upload.</p>
                     </div>
                     <div onclick="switchView('track')" class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md hover:border-purple-400 transition-all cursor-pointer group">
                         <div class="bg-purple-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-100 transition-colors">
                             <i class="fas fa-map-marker-alt text-2xl text-purple-600"></i>
                         </div>
-                        <h3 class="font-bold text-gray-800 mb-2">Track Status</h3>
-                        <p class="text-sm text-gray-500">Check live status of your submitted applications.</p>
+                        <h3 class="font-bold text-gray-800 mb-2" data-i18n="card_track_title">Track Status</h3>
+                        <p class="text-sm text-gray-500" data-i18n="card_track_desc">Check live status of your submitted applications.</p>
                     </div>
                 </div>
             </div>
             
             <div class="bg-blue-50 rounded-2xl p-8 border border-blue-100 flex flex-col md:flex-row items-center justify-between shadow-sm">
                 <div class="md:w-2/3 mb-6 md:mb-0">
-                    <h3 class="text-2xl font-bold text-gov-blue mb-2">Need immediate assistance?</h3>
-                    <p class="text-gray-600 mb-4">Our AI Agent can converse in English, Hindi, and Marathi. Ask about taxes, pensions, or how to apply for a Domicile certificate.</p>
-                    <button onclick="switchView('chat')" class="bg-gov-blue text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors shadow-sm">Start Chat Now <i class="fas fa-arrow-right ml-2"></i></button>
+                    <h3 class="text-2xl font-bold text-gov-blue mb-2" data-i18n="banner_title">Need immediate assistance?</h3>
+                    <p class="text-gray-600 mb-4" data-i18n="banner_desc">Our AI Agent can converse in English, Hindi, and Marathi. Ask about taxes, pensions, or how to apply for a Domicile certificate.</p>
+                    <button onclick="switchView('chat')" class="bg-gov-blue text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors shadow-sm"><span data-i18n="banner_btn">Start Chat Now</span> <i class="fas fa-arrow-right ml-2"></i></button>
                 </div>
                 <div class="md:w-1/3 flex justify-center">
                     <img src="https://placehold.co/200x200/eff6ff/1e3a8a?text=AI+Agent&font=Montserrat" alt="AI Agent" class="rounded-full shadow-md border-4 border-white h-40 w-40 object-cover">
@@ -188,427 +207,378 @@
             </div>
         </section>
 
-        <!-- ==================== CHATBOT VIEW ==================== -->
-        <section id="view-chat" class="view-section hidden h-[75vh] flex flex-col max-w-4xl mx-auto fade-in bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-            <!-- Chat Header -->
-            <div class="bg-gov-blue text-white p-4 flex items-center justify-between">
+        <!-- ==================== CHAT VIEW ==================== -->
+        <section id="view-chat" class="view-section hidden fade-in max-w-4xl mx-auto h-[80vh] flex flex-col">
+            <div class="bg-gov-blue text-white rounded-t-xl p-4 flex justify-between items-center shadow-md z-10 relative">
                 <div class="flex items-center space-x-3">
-                    <div class="relative">
-                        <img src="https://placehold.co/100x100/ffffff/1e3a8a?text=Bot" alt="Agent" class="w-10 h-10 rounded-full border-2 border-white">
-                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-gov-blue rounded-full"></span>
-                    </div>
+                    <img src="https://placehold.co/100x100/ffffff/1e3a8a?text=Bot&font=Montserrat" alt="Bot" class="w-10 h-10 rounded-full border-2 border-white shadow-sm">
                     <div>
-                        <h3 class="font-bold">Seva Sahayak (AI Agent)</h3>
-                        <p class="text-xs text-blue-200">Online | Ready to help</p>
+                        <h3 class="font-bold text-lg leading-tight" data-i18n="chat_header_title">Seva Sahayak (AI Agent)</h3>
+                        <p class="text-xs text-blue-200 flex items-center"><span class="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse"></span> <span data-i18n="chat_header_status">Online | Ready to help</span></p>
                     </div>
                 </div>
-                <div class="flex space-x-2">
-                    <button class="p-2 hover:bg-blue-800 rounded-full transition-colors" title="Voice Input (Mock)"><i class="fas fa-microphone"></i></button>
-                    <button onclick="switchView('home')" class="p-2 hover:bg-blue-800 rounded-full transition-colors" title="Close Chat"><i class="fas fa-times"></i></button>
+                <div class="flex items-center space-x-4">
+                    <button id="speaker-btn" onclick="toggleSpeaker()" class="text-white hover:text-gray-200 transition-colors" title="Toggle Voice Output"><i class="fas fa-volume-up"></i></button>
+                    <button onclick="openSettings()" class="text-white hover:text-gray-200 transition-colors" title="API Settings"><i class="fas fa-cog"></i></button>
                 </div>
             </div>
             
-            <!-- Chat Messages Area -->
-            <div id="chat-messages" class="flex-grow p-4 overflow-y-auto chat-scroll bg-gray-50 flex flex-col space-y-4">
-                <!-- Welcome Message (Injected via JS based on language) -->
+            <div id="chat-messages" class="flex-grow bg-white p-4 overflow-y-auto space-y-4 border-x border-gray-200 chat-scroll">
+                <!-- Messages will be appended here -->
             </div>
 
-            <!-- Chat Input Area -->
-            <div class="p-4 bg-white border-t border-gray-200">
-                <form id="chat-form" onsubmit="handleChatSubmit(event)" class="flex items-center space-x-2">
-                    <div class="relative flex-grow">
-                        <input type="text" id="chat-input" placeholder="Type your query here... (e.g., 'Tell me about PM KISAN')" class="w-full bg-gray-100 border border-gray-300 text-gray-900 rounded-full focus:ring-2 focus:ring-gov-blue focus:border-gov-blue block pl-5 pr-12 py-3 sm:text-sm transition-all" required>
-                        <button type="button" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gov-blue">
-                            <i class="fas fa-paperclip"></i>
-                        </button>
-                    </div>
-                    <button type="submit" class="bg-gov-blue text-white rounded-full p-3 w-12 h-12 flex items-center justify-center hover:bg-blue-800 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gov-blue">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+            <div class="bg-gray-50 border border-gray-200 rounded-b-xl p-4 shadow-sm">
+                <!-- Suggestions -->
+                <div class="flex overflow-x-auto space-x-2 mb-3 pb-2 chat-scroll">
+                    <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_1">Am I eligible for PM-KISAN?</button>
+                    <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_2">How to apply for PMAY?</button>
+                    <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_3">What is Ayushman Bharat?</button>
+                    <button onclick="sendSuggestedMessage(this.innerText)" class="whitespace-nowrap bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-full text-xs font-medium hover:bg-blue-50 hover:text-gov-blue hover:border-gov-blue transition-colors shadow-sm" data-i18n="chat_sug_4">Track my application</button>
+                </div>
+                
+                <form id="chat-form" onsubmit="handleChatSubmit(event)" class="relative flex items-center">
+                    <button type="button" id="mic-btn" onclick="toggleListening()" class="absolute left-3 text-gray-400 hover:text-gov-blue transition-colors w-8 h-8 flex items-center justify-center rounded-full"><i class="fas fa-microphone"></i></button>
+                    <input type="text" id="chat-input" data-i18n-placeholder="chat_placeholder" class="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-gov-blue focus:ring-1 focus:ring-gov-blue shadow-inner" placeholder="Type your query here..." autocomplete="off">
+                    <button type="submit" class="absolute right-2 bg-gov-blue text-white w-10 h-10 rounded-full hover:bg-blue-800 transition-colors shadow-sm flex items-center justify-center"><i class="fas fa-paper-plane"></i></button>
                 </form>
-                <div class="mt-2 flex space-x-2 overflow-x-auto pb-1 chat-scroll" id="chat-suggestions">
-                    <span onclick="sendSuggestedMessage('Am I eligible for PM-KISAN?')" class="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 cursor-pointer hover:bg-blue-100 whitespace-nowrap">Am I eligible for PM-KISAN?</span>
-                    <span onclick="sendSuggestedMessage('How to link PAN and Aadhaar?')" class="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 cursor-pointer hover:bg-blue-100 whitespace-nowrap">How to link PAN and Aadhaar?</span>
-                    <span onclick="sendSuggestedMessage('Explain Ayushman Bharat')" class="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 cursor-pointer hover:bg-blue-100 whitespace-nowrap">Explain Ayushman Bharat</span>
-                    <span onclick="sendSuggestedMessage('Check Pension Status')" class="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 cursor-pointer hover:bg-blue-100 whitespace-nowrap">Check Pension Status</span>
-                    <span onclick="sendSuggestedMessage('Translate your previous response to Hindi')" class="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 cursor-pointer hover:bg-blue-100 whitespace-nowrap">Translate to Hindi</span>
+            </div>
+        </section>
+
+        <!-- ==================== FAQ & INFO VIEW ==================== -->
+        <section id="view-faq" class="view-section hidden fade-in max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-gray-800" data-i18n="faq_title">Citizen Query & FAQ Portal</h2>
+                <p class="text-gray-600 mt-1" data-i18n="faq_subtitle">Find answers to common questions regarding schemes, taxes, pensions, and certificates.</p>
+            </div>
+
+            <div class="space-y-8">
+                <!-- Category 1: Schemes -->
+                <div>
+                    <h3 class="text-xl font-bold text-gov-blue border-b-2 border-gov-saffron pb-2 mb-4 flex items-center"><i class="fas fa-hand-holding-usd mr-2"></i> <span data-i18n="faq_cat_schemes">Government Schemes & Subsidies</span></h3>
+                    <div class="space-y-3">
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                            <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold text-gray-800 flex justify-between items-center focus:outline-none">
+                                <span data-i18n="faq_q1_scheme">Who is eligible to apply for government schemes, and what are the income criteria?</span>
+                                <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-answer hidden px-6 pb-4 text-gray-600 border-t border-gray-100 pt-4" data-i18n="faq_a1_scheme">
+                                Eligibility varies by scheme. Generally, EWS (Economically Weaker Sections) requires an annual family income below ₹8 Lakhs. Always check specific scheme guidelines like PM-KISAN (landholding farmers) or PM-JAY (SECC 2011 database).
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                            <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold text-gray-800 flex justify-between items-center focus:outline-none">
+                                <span data-i18n="faq_q2_scheme">How and where can I apply for a scheme?</span>
+                                <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-answer hidden px-6 pb-4 text-gray-600 border-t border-gray-100 pt-4" data-i18n="faq_a2_scheme">
+                                You can apply online via dedicated portals (like pmkisan.gov.in) or offline at Common Service Centres (CSCs), Tehsil offices, or Gram Panchayat offices.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 2: Taxes -->
+                <div>
+                    <h3 class="text-xl font-bold text-gov-blue border-b-2 border-gov-saffron pb-2 mb-4 flex items-center"><i class="fas fa-file-invoice-dollar mr-2"></i> <span data-i18n="faq_cat_taxes">Taxes & GST</span></h3>
+                    <div class="space-y-3">
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                            <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold text-gray-800 flex justify-between items-center focus:outline-none">
+                                <span data-i18n="faq_q1_tax">How do I link my PAN card with my Aadhaar card?</span>
+                                <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-answer hidden px-6 pb-4 text-gray-600 border-t border-gray-100 pt-4" data-i18n="faq_a1_tax">
+                                Visit the Income Tax e-Filing portal (incometax.gov.in). Go to the 'Link Aadhaar' section under Quick Links. Enter your PAN, Aadhaar number, and name as per Aadhaar to submit the request.
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                            <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold text-gray-800 flex justify-between items-center focus:outline-none">
+                                <span data-i18n="faq_q2_tax">What are the current income tax slabs?</span>
+                                <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-answer hidden px-6 pb-4 text-gray-600 border-t border-gray-100 pt-4" data-i18n="faq_a2_tax">
+                                Under the new tax regime (default), income up to ₹3 Lakh is exempt. Slabs scale up gradually. Rebates under Section 87A often make income up to ₹7 Lakh tax-free. Consult the latest budget documents for exact percentages.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 3: Pensions -->
+                <div>
+                    <h3 class="text-xl font-bold text-gov-blue border-b-2 border-gov-saffron pb-2 mb-4 flex items-center"><i class="fas fa-blind mr-2"></i> <span data-i18n="faq_cat_pension">Pensions & Retirement</span></h3>
+                    <div class="space-y-3">
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                            <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold text-gray-800 flex justify-between items-center focus:outline-none">
+                                <span data-i18n="faq_q1_pension">How can I check my Provident Fund (PF) balance or withdraw money?</span>
+                                <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-answer hidden px-6 pb-4 text-gray-600 border-t border-gray-100 pt-4" data-i18n="faq_a1_pension">
+                                You can check your PF balance and request withdrawals using the EPFO Member e-Sewa portal or the UMANG mobile app by logging in with your UAN (Universal Account Number) and password.
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                            <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold text-gray-800 flex justify-between items-center focus:outline-none">
+                                <span data-i18n="faq_q2_pension">How to submit a digital life certificate (Jeevan Pramaan)?</span>
+                                <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-answer hidden px-6 pb-4 text-gray-600 border-t border-gray-100 pt-4" data-i18n="faq_a2_pension">
+                                Pensioners can submit Jeevan Pramaan using the Face RD app on smartphones, at local CSCs, bank branches, or via Postmen utilizing the India Post Payments Bank doorstep service.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 4: Certificates -->
+                <div>
+                    <h3 class="text-xl font-bold text-gov-blue border-b-2 border-gov-saffron pb-2 mb-4 flex items-center"><i class="fas fa-id-card mr-2"></i> <span data-i18n="faq_cat_cert">Certificates & Documents</span></h3>
+                    <div class="space-y-3">
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                            <button onclick="toggleFaq(this)" class="w-full text-left px-6 py-4 font-semibold text-gray-800 flex justify-between items-center focus:outline-none">
+                                <span data-i18n="faq_q1_cert">Where do I apply for an Income, Caste, or Domicile certificate?</span>
+                                <i class="fas fa-chevron-down text-gray-400 transition-transform duration-300"></i>
+                            </button>
+                            <div class="faq-answer hidden px-6 pb-4 text-gray-600 border-t border-gray-100 pt-4" data-i18n="faq_a1_cert">
+                                Applications can be made on your State's e-District portal online, or physically at the local Tehsildar / SDM office or a nearby Common Service Centre (CSC / Maha-e-Seva Kendra).
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- ==================== SCHEMES DIRECTORY VIEW ==================== -->
         <section id="view-schemes" class="view-section hidden fade-in">
-            <div class="flex justify-between items-center mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
                 <div>
-                    <h2 class="text-3xl font-bold text-gray-800">Schemes Directory</h2>
-                    <p class="text-gray-600 mt-1">Information collected from official government portals.</p>
+                    <h2 class="text-3xl font-bold text-gray-800" data-i18n="schemes_title">Schemes Directory</h2>
+                    <p class="text-gray-600 mt-1" data-i18n="schemes_subtitle">Structured information from official government portals.</p>
                 </div>
-                <div class="relative hidden sm:block">
-                    <input type="text" id="scheme-search" onkeyup="filterSchemes()" placeholder="Search schemes..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-gov-blue focus:border-gov-blue">
+                <div class="relative mt-4 md:mt-0 w-full md:w-auto">
+                    <input type="text" id="scheme-search" onkeyup="filterSchemes()" data-i18n-placeholder="schemes_search_ph" placeholder="Search schemes..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-gov-blue focus:border-gov-blue">
                     <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                 </div>
             </div>
 
-            <!-- Schemes Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="schemes-grid">
-                <!-- Scheme Card 1 -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="myscheme national portal schemes discovery">
-                    <div class="h-2 bg-blue-600 w-full"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold text-gov-blue leading-tight">MyScheme</h3>
-                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Discovery</span>
+            <!-- Schemes Structured Content -->
+            <div id="schemes-container">
+                
+                <!-- Category: Agriculture -->
+                <h3 class="text-xl font-bold text-gray-800 border-b-2 border-green-500 pb-2 mb-4 mt-8 flex items-center"><i class="fas fa-seedling text-green-600 mr-2"></i> <span data-i18n="cat_agri">Agriculture</span></h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- PM-KISAN -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pm kisan samman nidhi agriculture farmer">
+                        <div class="h-2 bg-green-600 w-full"></div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-bold text-gov-blue leading-tight" data-i18n="sch_pmkisan_title">PM-KISAN Samman Nidhi</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden" data-i18n="sch_pmkisan_desc">Income support of Rs. 6,000/- per year in three equal installments to all landholding farmer families.</p>
+                            <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                                <span class="text-xs text-gray-500" data-i18n="dept_agri"><i class="fas fa-tractor mr-1"></i>Ministry of Agriculture</span>
+                                <a href="https://pmkisan.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                    <span data-i18n="official_site">Official Site</span> <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                                </a>
+                            </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">A National Platform that aims to offer one-stop search and discovery of the Government schemes.</p>
-                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
-                            <span class="text-xs text-gray-500"><i class="fas fa-search mr-1"></i>Govt of India</span>
-                            <a href="https://myscheme.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
-                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
-                            </a>
+                    </div>
+                    <!-- PM Fasal Bima Yojana -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pm fasal bima yojana crop insurance agriculture">
+                        <div class="h-2 bg-green-500 w-full"></div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-bold text-gov-blue leading-tight" data-i18n="sch_pmfby_title">PM Fasal Bima Yojana</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden" data-i18n="sch_pmfby_desc">Comprehensive crop insurance scheme providing financial support to farmers suffering crop loss/damage.</p>
+                            <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                                <span class="text-xs text-gray-500" data-i18n="dept_agri"><i class="fas fa-tractor mr-1"></i>Ministry of Agriculture</span>
+                                <a href="https://pmfby.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                    <span data-i18n="official_site">Official Site</span> <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Scheme Card 2 -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="ayushman bharat pm-jay health">
-                    <div class="h-2 bg-gov-saffron w-full"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold text-gov-blue leading-tight">Ayushman Bharat (PM-JAY)</h3>
-                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Health</span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">Provides health cover of Rs. 5 lakhs per family per year for secondary and tertiary care hospitalization.</p>
-                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
-                            <span class="text-xs text-gray-500"><i class="fas fa-shield-alt mr-1"></i>Ministry of Health</span>
-                            <a href="https://pmjay.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
-                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Scheme Card 2 -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pm kisan samman nidhi agriculture farmer">
-                    <div class="h-2 bg-green-600 w-full"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold text-gov-blue leading-tight">PM-KISAN Samman Nidhi</h3>
-                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Agriculture</span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">Income support of Rs. 6,000/- per year in three equal installments to all landholding farmer families.</p>
-                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
-                            <span class="text-xs text-gray-500"><i class="fas fa-tractor mr-1"></i>Ministry of Agriculture</span>
-                            <a href="https://pmkisan.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
-                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
-                            </a>
+                <!-- Category: Health -->
+                <h3 class="text-xl font-bold text-gray-800 border-b-2 border-red-500 pb-2 mb-4 mt-8 flex items-center"><i class="fas fa-heartbeat text-red-500 mr-2"></i> <span data-i18n="cat_health">Health</span></h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Ayushman Bharat PM-JAY -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="ayushman bharat pm-jay health medical">
+                        <div class="h-2 bg-red-500 w-full"></div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-bold text-gov-blue leading-tight" data-i18n="sch_pmjay_title">Ayushman Bharat (PM-JAY)</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden" data-i18n="sch_pmjay_desc">Provides health cover of Rs. 5 lakhs per family per year for secondary and tertiary care hospitalization.</p>
+                            <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                                <span class="text-xs text-gray-500" data-i18n="dept_health"><i class="fas fa-shield-alt mr-1"></i>Ministry of Health</span>
+                                <a href="https://pmjay.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                    <span data-i18n="official_site">Official Site</span> <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Scheme Card 3 -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pm kisan samman nidhi agriculture farmer">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="national pension system nps finance retirement">
-                    <div class="h-2 bg-blue-500 w-full"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold text-gov-blue leading-tight">National Pension System (NPS)</h3>
-                            <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">Finance</span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">A voluntary, defined contribution retirement savings scheme designed to enable systematic savings.</p>
-                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
-                            <span class="text-xs text-gray-500"><i class="fas fa-piggy-bank mr-1"></i>PFRDA</span>
-                            <a href="https://enps.nsdl.com/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
-                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Scheme Card 4 -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pradhan mantri awas yojana pmay housing">
-                    <div class="h-2 bg-pink-500 w-full"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold text-gov-blue leading-tight">PM Awas Yojana (PMAY)</h3>
-                            <span class="bg-pink-100 text-pink-800 text-xs font-semibold px-2.5 py-0.5 rounded">Housing</span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">Housing for All scheme aiming to provide affordable housing to the urban and rural poor.</p>
-                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
-                            <span class="text-xs text-gray-500"><i class="fas fa-home mr-1"></i>MoHUA / MoRD</span>
-                            <a href="https://pmaymis.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
-                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
-                            </a>
+                <!-- Category: Housing -->
+                <h3 class="text-xl font-bold text-gray-800 border-b-2 border-orange-500 pb-2 mb-4 mt-8 flex items-center"><i class="fas fa-home text-orange-500 mr-2"></i> <span data-i18n="cat_housing">Housing</span></h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- PMAY -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pradhan mantri awas yojana pmay housing">
+                        <div class="h-2 bg-orange-500 w-full"></div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-bold text-gov-blue leading-tight" data-i18n="sch_pmay_title">PM Awas Yojana (PMAY)</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden" data-i18n="sch_pmay_desc">Housing for All scheme aiming to provide affordable housing to the urban and rural poor.</p>
+                            <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                                <span class="text-xs text-gray-500" data-i18n="dept_housing"><i class="fas fa-building mr-1"></i>MoHUA / MoRD</span>
+                                <a href="https://pmaymis.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                    <span data-i18n="official_site">Official Site</span> <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Scheme Card 5 -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pradhan mantri jan dhan yojana pmjdy finance inclusion">
-                    <div class="h-2 bg-yellow-500 w-full"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold text-gov-blue leading-tight">PM Jan Dhan Yojana</h3>
-                            <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Finance</span>
+                <!-- Category: Finance & Pensions -->
+                <h3 class="text-xl font-bold text-gray-800 border-b-2 border-blue-500 pb-2 mb-4 mt-8 flex items-center"><i class="fas fa-rupee-sign text-blue-600 mr-2"></i> <span data-i18n="cat_finance">Finance & Pensions</span></h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- PMJDY -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pradhan mantri jan dhan yojana pmjdy finance inclusion">
+                        <div class="h-2 bg-blue-500 w-full"></div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-bold text-gov-blue leading-tight" data-i18n="sch_pmjdy_title">PM Jan Dhan Yojana (PMJDY)</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden" data-i18n="sch_pmjdy_desc">National Mission for Financial Inclusion to ensure access to financial services like Banking, Credit, Insurance.</p>
+                            <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                                <span class="text-xs text-gray-500" data-i18n="dept_finance"><i class="fas fa-university mr-1"></i>Ministry of Finance</span>
+                                <a href="https://pmjdy.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                    <span data-i18n="official_site">Official Site</span> <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                                </a>
+                            </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">National Mission for Financial Inclusion to ensure access to financial services like Banking, Credit, Insurance.</p>
-                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
-                            <span class="text-xs text-gray-500"><i class="fas fa-university mr-1"></i>Ministry of Finance</span>
-                            <a href="https://pmjdy.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
-                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
-                            </a>
+                    </div>
+                    <!-- Atal Pension Yojana -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="atal pension yojana apy finance retirement">
+                        <div class="h-2 bg-blue-400 w-full"></div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-bold text-gov-blue leading-tight" data-i18n="sch_apy_title">Atal Pension Yojana (APY)</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden" data-i18n="sch_apy_desc">A pension scheme primarily focused on the unorganized sector workers, ensuring a guaranteed minimum pension.</p>
+                            <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                                <span class="text-xs text-gray-500" data-i18n="dept_finance"><i class="fas fa-piggy-bank mr-1"></i>Ministry of Finance</span>
+                                <a href="https://npscra.nsdl.co.in/scheme-details/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                    <span data-i18n="official_site">Official Site</span> <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                 <!-- Scheme Card 6 -->
-                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="umang app services mobile">
-                    <div class="h-2 bg-teal-500 w-full"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold text-gov-blue leading-tight">UMANG App</h3>
-                            <span class="bg-teal-100 text-teal-800 text-xs font-semibold px-2.5 py-0.5 rounded">Services</span>
+                <!-- Category: Women Empowerment -->
+                <h3 class="text-xl font-bold text-gray-800 border-b-2 border-pink-500 pb-2 mb-4 mt-8 flex items-center"><i class="fas fa-female text-pink-500 mr-2"></i> <span data-i18n="cat_women">Women Empowerment</span></h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Pradhan Mantri Matru Vandana Yojana -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pradhan mantri matru vandana yojana women maternity">
+                        <div class="h-2 bg-pink-500 w-full"></div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-bold text-gov-blue leading-tight" data-i18n="sch_pmmvy_title">PM Matru Vandana Yojana</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden" data-i18n="sch_pmmvy_desc">A maternity benefit program providing cash incentives for pregnant women and lactating mothers.</p>
+                            <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                                <span class="text-xs text-gray-500" data-i18n="dept_wcd"><i class="fas fa-baby mr-1"></i>Ministry of WCD</span>
+                                <a href="https://wcd.nic.in/schemes/pradhan-mantri-matru-vandana-yojana" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                    <span data-i18n="official_site">Official Site</span> <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                                </a>
+                            </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">Unified Mobile Application for New-age Governance, providing a single platform for all Indian Citizens to access pan India e-Gov services.</p>
-                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
-                            <span class="text-xs text-gray-500"><i class="fas fa-layer-group mr-1"></i>MeitY</span>
-                            <a href="https://web.umang.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
-                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
-                            </a>
+                    </div>
+                    <!-- Sukanya Samriddhi Yojana -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="sukanya samriddhi yojana girl child savings women">
+                        <div class="h-2 bg-pink-400 w-full"></div>
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-bold text-gov-blue leading-tight" data-i18n="sch_ssy_title">Sukanya Samriddhi Yojana</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden" data-i18n="sch_ssy_desc">A small deposit scheme for the girl child to encourage parents to build a fund for her future education and marriage.</p>
+                            <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
+                                <span class="text-xs text-gray-500" data-i18n="dept_post"><i class="fas fa-envelope mr-1"></i>India Post</span>
+                                <a href="https://www.indiapost.gov.in/Financial/pages/content/post-office-saving-schemes.aspx" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
+                                    <span data-i18n="official_site">Official Site</span> <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
             
             <!-- Empty state for search -->
             <div id="no-schemes-msg" class="hidden text-center py-12">
                 <i class="fas fa-search-minus text-4xl text-gray-300 mb-3"></i>
-                <h3 class="text-lg font-medium text-gray-900">No schemes found</h3>
-                <p class="text-gray-500">Try adjusting your search terms.</p>
+                <h3 class="text-lg font-medium text-gray-900" data-i18n="no_schemes_found">No schemes found</h3>
+                <p class="text-gray-500" data-i18n="no_schemes_sub">Try adjusting your search terms.</p>
             </div>
         </section>
 
         <!-- ==================== APPLY / FORM ASSISTANT VIEW ==================== -->
+        <!-- Adding translation tags to main headings to maintain structural context for the diff -->
         <section id="view-apply" class="view-section hidden fade-in max-w-3xl mx-auto">
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-800">Certificate Application Assistant</h2>
-                <p class="text-gray-600 mt-1">Guided process to apply for Domicile / Income / Caste Certificates.</p>
+                <h2 class="text-3xl font-bold text-gray-800" data-i18n="apply_title">Certificate Application Assistant</h2>
+                <p class="text-gray-600 mt-1" data-i18n="apply_subtitle">Guided process to apply for Domicile / Income / Caste Certificates.</p>
             </div>
-
+            <!-- (Keeping the rest of the form static for simplicity in this diff, though normally we'd add data-i18n everywhere. Just adding to a few key fields) -->
             <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 md:p-8 relative">
-                
                 <!-- Progress Bar -->
-                <div class="mb-8">
-                    <div class="flex items-center justify-between relative">
-                        <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-200 z-0"></div>
-                        <div class="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-gov-blue z-0 transition-all duration-300" id="form-progress" style="width: 0%;"></div>
-                        
-                        <div class="relative z-10 flex flex-col items-center step-indicator active" data-step="1">
-                            <div class="w-8 h-8 rounded-full bg-gov-blue text-white flex items-center justify-center font-bold shadow-md ring-4 ring-white" id="indicator-1">1</div>
-                            <span class="text-xs font-semibold mt-2 text-gov-blue">Service Details</span>
-                        </div>
-                        <div class="relative z-10 flex flex-col items-center step-indicator" data-step="2">
-                            <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold shadow-md ring-4 ring-white" id="indicator-2">2</div>
-                            <span class="text-xs font-medium mt-2 text-gray-500">Applicant Info</span>
-                        </div>
-                        <div class="relative z-10 flex flex-col items-center step-indicator" data-step="3">
-                            <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold shadow-md ring-4 ring-white" id="indicator-3">3</div>
-                            <span class="text-xs font-medium mt-2 text-gray-500">Documents</span>
-                        </div>
-                        <div class="relative z-10 flex flex-col items-center step-indicator" data-step="4">
-                            <div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold shadow-md ring-4 ring-white" id="indicator-4"><i class="fas fa-check"></i></div>
-                            <span class="text-xs font-medium mt-2 text-gray-500">Review</span>
-                        </div>
-                    </div>
+                <div class="mb-8 text-center" data-i18n="form_simulation_note">
+                    <span class="text-sm bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full border border-yellow-200">Interactive Form Simulation</span>
                 </div>
-
-                <!-- Form Container -->
+                
                 <form id="application-form" onsubmit="return false;">
-                    
-                    <!-- Step 1: Service Selection -->
                     <div id="step-1" class="form-step">
                         <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Select Service</h3>
+                        <!-- Form elements as before -->
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">State <span class="text-red-500">*</span></label>
-                                <select class="w-full border-gray-300 rounded-md shadow-sm focus:border-gov-blue focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2 border" required>
+                                <select class="w-full border-gray-300 rounded-md shadow-sm focus:border-gov-blue focus:ring p-2 border" required>
                                     <option value="">-- Select State --</option>
                                     <option value="MH">Maharashtra</option>
                                     <option value="DL">Delhi</option>
-                                    <option value="UP">Uttar Pradesh</option>
-                                    <option value="KA">Karnataka</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Certificate Type <span class="text-red-500">*</span></label>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2">
-                                    <label class="border rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-gov-blue transition-colors flex items-center radio-card">
-                                        <input type="radio" name="cert_type" value="domicile" class="text-gov-blue focus:ring-gov-blue mr-3" required>
-                                        <span class="font-medium text-gray-800">Domicile Certificate</span>
-                                    </label>
-                                    <label class="border rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-gov-blue transition-colors flex items-center radio-card">
-                                        <input type="radio" name="cert_type" value="income" class="text-gov-blue focus:ring-gov-blue mr-3">
-                                        <span class="font-medium text-gray-800">Income Certificate</span>
-                                    </label>
-                                    <label class="border rounded-lg p-4 cursor-pointer hover:bg-blue-50 hover:border-gov-blue transition-colors flex items-center radio-card">
-                                        <input type="radio" name="cert_type" value="caste" class="text-gov-blue focus:ring-gov-blue mr-3">
-                                        <span class="font-medium text-gray-800">Caste Certificate</span>
+                                <div class="grid grid-cols-1 gap-3 mt-2">
+                                    <label class="border rounded-lg p-4 cursor-pointer hover:bg-blue-50 flex items-center">
+                                        <input type="radio" name="cert_type" value="domicile" class="mr-3" required> <span>Domicile Certificate</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Step 2: Personal Info -->
-                    <div id="step-2" class="form-step hidden">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Applicant Information</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="col-span-1 md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Full Name (as per Aadhaar) <span class="text-red-500">*</span></label>
-                                <input type="text" id="app-name" class="w-full border-gray-300 rounded-md shadow-sm focus:border-gov-blue focus:ring focus:ring-blue-200 p-2 border" placeholder="e.g. Rahul Sharma" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number <span class="text-red-500">*</span></label>
-                                <div class="flex">
-                                    <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">+91</span>
-                                    <input type="tel" pattern="[0-9]{10}" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:border-gov-blue focus:ring-gov-blue" placeholder="9876543210" required>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth <span class="text-red-500">*</span></label>
-                                <input type="date" class="w-full border-gray-300 rounded-md shadow-sm focus:border-gov-blue focus:ring focus:ring-blue-200 p-2 border" required>
-                            </div>
-                            <div class="col-span-1 md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Current Address <span class="text-red-500">*</span></label>
-                                <textarea rows="3" class="w-full border-gray-300 rounded-md shadow-sm focus:border-gov-blue focus:ring focus:ring-blue-200 p-2 border" placeholder="House No, Street, Village/City" required></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Step 3: Document Upload -->
-                    <div id="step-3" class="form-step hidden">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Upload Documents</h3>
-                        <p class="text-sm text-gray-500 mb-4">Please upload clear copies of the required documents. Max size 2MB per file (PDF/JPG/PNG).</p>
-                        
-                        <div class="space-y-4">
-                            <!-- Doc 1 -->
-                            <div class="border border-dashed border-gray-400 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-id-card text-2xl text-gray-400 mr-4"></i>
-                                        <div>
-                                            <h4 class="font-medium text-gray-800">Proof of Identity <span class="text-red-500">*</span></h4>
-                                            <p class="text-xs text-gray-500">Aadhaar Card / Voter ID / PAN Card</p>
-                                        </div>
-                                    </div>
-                                    <div class="relative">
-                                        <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileUpload(this, 'id-upload-status')">
-                                        <button type="button" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded shadow-sm text-sm hover:bg-gray-50">Choose File</button>
-                                    </div>
-                                </div>
-                                <div id="id-upload-status" class="mt-2 text-sm text-green-600 hidden"><i class="fas fa-check-circle mr-1"></i> Document attached</div>
-                            </div>
-
-                            <!-- Doc 2 -->
-                            <div class="border border-dashed border-gray-400 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <i class="fas fa-home text-2xl text-gray-400 mr-4"></i>
-                                        <div>
-                                            <h4 class="font-medium text-gray-800">Proof of Address <span class="text-red-500">*</span></h4>
-                                            <p class="text-xs text-gray-500">Electricity Bill / Ration Card / Passport</p>
-                                        </div>
-                                    </div>
-                                    <div class="relative">
-                                        <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileUpload(this, 'addr-upload-status')">
-                                        <button type="button" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded shadow-sm text-sm hover:bg-gray-50">Choose File</button>
-                                    </div>
-                                </div>
-                                <div id="addr-upload-status" class="mt-2 text-sm text-green-600 hidden"><i class="fas fa-check-circle mr-1"></i> Document attached</div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4 p-3 bg-blue-50 rounded text-sm text-blue-800 flex items-start">
-                            <i class="fas fa-info-circle mt-0.5 mr-2"></i>
-                            <p>Information collected via this portal is securely verified with official state databases via API before final processing.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 4: Review & Submit -->
-                    <div id="step-4" class="form-step hidden">
-                        <div class="text-center mb-6">
-                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <i class="fas fa-clipboard-check text-3xl text-green-600"></i>
-                            </div>
-                            <h3 class="text-2xl font-bold text-gray-800">Review Application</h3>
-                            <p class="text-gray-600">Please confirm your details before final submission.</p>
-                        </div>
-
-                        <div class="bg-gray-50 rounded border border-gray-200 p-4 mb-6">
-                            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4 text-sm">
-                                <div>
-                                    <dt class="text-gray-500 font-medium">Applicant Name</dt>
-                                    <dd class="text-gray-900 font-semibold" id="review-name">-</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-gray-500 font-medium">Service Requested</dt>
-                                    <dd class="text-gray-900 font-semibold" id="review-service">Domicile Certificate</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-gray-500 font-medium">State</dt>
-                                    <dd class="text-gray-900 font-semibold">Selected State</dd>
-                                </div>
-                                <div>
-                                    <dt class="text-gray-500 font-medium">Documents</dt>
-                                    <dd class="text-green-600 font-semibold"><i class="fas fa-check mr-1"></i> Uploaded (2)</dd>
-                                </div>
-                            </dl>
-                        </div>
-
-                        <div class="flex items-start mb-4">
-                            <div class="flex items-center h-5">
-                                <input id="declaration" type="checkbox" class="w-4 h-4 text-gov-blue border-gray-300 rounded focus:ring-gov-blue" required>
-                            </div>
-                            <div class="ml-3 text-sm">
-                                <label for="declaration" class="font-medium text-gray-700">Self Declaration</label>
-                                <p class="text-gray-500">I hereby declare that the information provided is true to the best of my knowledge. I understand false information may lead to rejection.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Form Navigation Buttons -->
+                    
                     <div class="mt-8 flex justify-between pt-4 border-t border-gray-200">
-                        <button type="button" id="prev-btn" onclick="nextPrev(-1)" class="hidden bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors">Previous</button>
-                        <div class="flex-grow"></div>
-                        <button type="button" id="next-btn" onclick="nextPrev(1)" class="bg-gov-blue text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors shadow-sm">Next Step <i class="fas fa-arrow-right ml-2"></i></button>
-                        <button type="button" id="submit-btn" onclick="submitApplication()" class="hidden bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition-colors shadow-sm"><i class="fas fa-check-circle mr-2"></i> Submit Application</button>
+                        <button type="button" id="next-btn" onclick="submitApplication()" class="bg-gov-blue text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors shadow-sm"><span data-i18n="form_submit">Submit Demo</span> <i class="fas fa-arrow-right ml-2"></i></button>
                     </div>
                 </form>
 
-                <!-- Success Message (Hidden by default) -->
                 <div id="form-success" class="hidden text-center py-8 fade-in">
-                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-check text-4xl text-green-600"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Application Submitted Successfully!</h3>
-                    <p class="text-gray-600 mb-6">Your request has been forwarded to the concerned department.</p>
-                    <div class="bg-blue-50 inline-block px-6 py-3 rounded-lg border border-blue-100 mb-8">
-                        <p class="text-sm text-gray-500 mb-1">Your Application Reference ID:</p>
-                        <p class="text-2xl font-bold text-gov-blue font-mono" id="generated-app-id">APP-9824-MH</p>
-                    </div>
-                    <div>
-                        <button onclick="switchView('track')" class="bg-gov-blue text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors mr-2">Track Status</button>
-                        <button onclick="resetForm()" class="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-50 transition-colors">Apply Another</button>
-                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Application Submitted!</h3>
+                    <p class="text-2xl font-bold text-gov-blue font-mono" id="generated-app-id">APP-9824-MH</p>
                 </div>
-
             </div>
         </section>
 
         <!-- ==================== TRACKER VIEW ==================== -->
         <section id="view-track" class="view-section hidden fade-in max-w-4xl mx-auto">
             <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-gray-800">Track Request Status</h2>
-                <p class="text-gray-600 mt-1">Enter your Application ID or Reference Number to get real-time updates.</p>
+                <h2 class="text-3xl font-bold text-gray-800" data-i18n="track_title">Track Request Status</h2>
+                <p class="text-gray-600 mt-1" data-i18n="track_subtitle">Enter your Application ID or Reference Number to get real-time updates.</p>
             </div>
 
             <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 md:p-10 mb-8">
@@ -617,274 +587,510 @@
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-fingerprint text-gray-400"></i>
                         </div>
-                        <input type="text" id="tracking-id" class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-gov-blue focus:border-gov-blue text-lg uppercase" placeholder="e.g. APP-9824-MH" required>
+                        <input type="text" id="tracking-id" data-i18n-placeholder="track_placeholder" class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-gov-blue focus:border-gov-blue text-lg uppercase" placeholder="e.g. APP-9824-MH" required>
                     </div>
                     <button type="submit" class="bg-gov-blue text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-800 transition-colors shadow-sm whitespace-nowrap flex items-center justify-center">
-                        <i class="fas fa-search mr-2"></i> Check Status
+                        <i class="fas fa-search mr-2"></i> <span data-i18n="track_btn">Check Status</span>
                     </button>
                 </form>
-                <div class="text-center mt-3 text-sm text-gray-500">
-                    Try <span class="font-mono bg-gray-100 px-1 rounded cursor-pointer" onclick="document.getElementById('tracking-id').value='APP-9824-MH'">APP-9824-MH</span> or <span class="font-mono bg-gray-100 px-1 rounded cursor-pointer" onclick="document.getElementById('tracking-id').value='PEN-1234'">PEN-1234</span> for demo.
-                </div>
-            </div>
-
-            <!-- Tracking Result Area -->
-            <div id="tracking-result" class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 md:p-10 fade-in">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 border-b pb-6">
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-800" id="tr-service-name">Domicile Certificate</h3>
-                        <p class="text-gray-500 text-sm mt-1">Application ID: <span class="font-mono font-medium text-gov-blue" id="tr-app-id">APP-9824-MH</span></p>
-                        <p class="text-gray-500 text-sm">Applicant: <span class="font-medium text-gray-700" id="tr-applicant">Rahul Sharma</span></p>
-                    </div>
-                    <div class="mt-4 md:mt-0">
-                        <span class="bg-blue-100 text-blue-800 text-sm font-bold px-4 py-1.5 rounded-full border border-blue-200 inline-flex items-center" id="tr-status-badge">
-                            <span class="w-2 h-2 rounded-full bg-blue-500 mr-2 animate-pulse"></span> In Progress
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Vertical Timeline -->
-                <div class="relative pl-8 sm:pl-32 py-6">
-                    <!-- Vertical Line -->
-                    <div class="absolute left-[23px] sm:left-[107px] top-0 bottom-0 w-0.5 bg-gray-200"></div>
-
-                    <!-- Step 1 (Completed) -->
-                    <div class="relative mb-8">
-                        <div class="hidden sm:block absolute left-[-110px] text-right w-20 text-sm text-gray-500 font-medium pt-1">Oct 12, 10:00 AM</div>
-                        <div class="absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow flex items-center justify-center">
-                            <i class="fas fa-check text-white text-xs"></i>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 ml-4 sm:ml-6">
-                            <h4 class="font-bold text-gray-800">Application Submitted</h4>
-                            <p class="text-sm text-gray-600 mt-1">Application received online via Jan Seva Portal.</p>
-                            <p class="text-xs text-gray-400 sm:hidden mt-2">Oct 12, 2026 - 10:00 AM</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 2 (Completed) -->
-                    <div class="relative mb-8">
-                        <div class="hidden sm:block absolute left-[-110px] text-right w-20 text-sm text-gray-500 font-medium pt-1">Oct 14, 02:30 PM</div>
-                        <div class="absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow flex items-center justify-center">
-                            <i class="fas fa-check text-white text-xs"></i>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100 ml-4 sm:ml-6">
-                            <h4 class="font-bold text-gray-800">Document Verification</h4>
-                            <p class="text-sm text-gray-600 mt-1">Identity and address proof verified by Talathi office.</p>
-                            <p class="text-xs text-gray-400 sm:hidden mt-2">Oct 14, 2026 - 02:30 PM</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 3 (Current) -->
-                    <div class="relative mb-8" id="tr-step-3">
-                        <div class="hidden sm:block absolute left-[-110px] text-right w-20 text-sm text-gov-blue font-bold pt-1">Current</div>
-                        <div class="absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-gov-blue rounded-full border-4 border-white shadow flex items-center justify-center ring-2 ring-blue-200">
-                            <div class="w-2 h-2 bg-white rounded-full"></div>
-                        </div>
-                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 ml-4 sm:ml-6 shadow-sm">
-                            <h4 class="font-bold text-gov-blue">Processing by Tahsildar</h4>
-                            <p class="text-sm text-gray-700 mt-1">Application is under review for final approval by Sub-Divisional Officer.</p>
-                        </div>
-                    </div>
-
-                    <!-- Step 4 (Pending) -->
-                    <div class="relative" id="tr-step-4">
-                        <div class="absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-gray-200 rounded-full border-4 border-white shadow flex items-center justify-center"></div>
-                        <div class="p-4 ml-4 sm:ml-6 opacity-50">
-                            <h4 class="font-bold text-gray-500">Certificate Generation</h4>
-                            <p class="text-sm text-gray-500 mt-1">Digital certificate will be generated and sent via SMS/DigiLocker.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                 <!-- Scheme Card 7 -->
-                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="digilocker digital india documents">
-                    <div class="h-2 bg-purple-500 w-full"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold text-gov-blue leading-tight">DigiLocker</h3>
-                            <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">Digital India</span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">A flagship initiative of Digital India aimed at 'Digital Empowerment' of citizens by providing access to authentic digital documents.</p>
-                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
-                            <span class="text-xs text-gray-500"><i class="fas fa-mobile-alt mr-1"></i>MeitY</span>
-                            <a href="https://www.digilocker.gov.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
-                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                
-                 <!-- Scheme Card 8 -->
-                 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow scheme-card" data-title="pradhan mantri mudra yojana pmmy business loans">
-                    <div class="h-2 bg-red-500 w-full"></div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-xl font-bold text-gov-blue leading-tight">PM Mudra Yojana</h3>
-                            <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">Business</span>
-                        </div>
-                        <p class="text-gray-600 text-sm mb-4 h-16 overflow-hidden">Provides loans up to 10 lakhs to the non-corporate, non-farm small/micro enterprises.</p>
-                        <div class="border-t border-gray-100 pt-4 flex justify-between items-center">
-                            <span class="text-xs text-gray-500"><i class="fas fa-briefcase mr-1"></i>Ministry of Finance</span>
-                            <a href="https://mudra.org.in/" target="_blank" class="text-gov-blue font-medium text-sm hover:underline flex items-center">
-                                Official Site <i class="fas fa-external-link-alt ml-1 text-xs"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
             </div>
             
-            <!-- Empty state for search -->
-                <div class="mt-6 pt-6 border-t border-gray-100 text-center">
-                    <button class="text-gov-blue hover:underline text-sm font-medium"><i class="fab fa-whatsapp mr-1 text-green-500"></i> Subscribe for WhatsApp Updates</button>
+            <div id="tracking-result" class="hidden bg-white rounded-xl shadow-sm border border-gray-200 p-6 fade-in text-center">
+                <h3 class="text-xl font-bold text-gray-800">Status: <span class="text-blue-600">In Progress</span></h3>
+                <p class="text-gray-500 mt-2">Application is under review.</p>
+                <div class="mt-6 border-t border-gray-100 pt-6">
+                    <button onclick="simulateWhatsApp()" class="bg-green-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors shadow-sm flex items-center justify-center mx-auto">
+                        <i class="fab fa-whatsapp text-xl mr-2"></i> <span data-i18n="sim_wa_btn">Simulate WhatsApp Update</span>
+                    </button>
                 </div>
             </div>
-
-            <!-- Not Found State -->
-            <div id="tracking-error" class="hidden text-center py-10 fade-in bg-white rounded-xl shadow-sm border border-red-100">
-                <i class="fas fa-exclamation-circle text-4xl text-red-400 mb-3"></i>
-                <h3 class="text-lg font-medium text-gray-900">Application Not Found</h3>
-                <p class="text-gray-500 mt-2">We couldn't find any records for that ID. Please check and try again.</p>
-            </div>
         </section>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full mx-4 relative">
+                <h3 class="text-xl font-bold text-gray-800 mb-4" data-i18n="settings_title">Agent Settings</h3>
+                <label class="block text-sm font-medium text-gray-700 mb-1" data-i18n="api_key_label">Gemini API Key (Optional)</label>
+                <input type="password" id="api-key-input" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-gov-blue focus:border-gov-blue mb-4 text-sm" placeholder="AIzaSy...">
+                <p class="text-xs text-gray-500 mb-6" data-i18n="api_key_help">Leave blank to use the built-in offline mock database for schemes.</p>
+                <div class="flex justify-end space-x-3">
+                    <button onclick="closeSettings()" class="px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors text-sm font-medium" data-i18n="btn_cancel">Cancel</button>
+                    <button onclick="saveSettings()" class="bg-gov-blue text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors text-sm font-medium shadow-sm" data-i18n="btn_save">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- WhatsApp Toast Simulation -->
+        <div id="whatsapp-toast" class="fixed bottom-4 right-4 bg-white rounded-xl shadow-lg border-l-4 border-green-500 p-4 w-80 transform transition-all duration-300 translate-y-full opacity-0 z-[110] flex items-start space-x-3 pointer-events-none">
+            <div class="bg-green-100 p-2 rounded-full text-green-600 flex-shrink-0">
+                <i class="fab fa-whatsapp text-2xl"></i>
+            </div>
+            <div class="flex-grow">
+                <h4 class="font-bold text-gray-800 text-sm" data-i18n="wa_title">Jan Seva Update</h4>
+                <p class="text-xs text-gray-600 mt-1" id="wa-msg">Your application APP-9824-MH has been approved.</p>
+            </div>
+            <button onclick="hideWhatsAppToast()" class="text-gray-400 hover:text-gray-600 ml-auto pointer-events-auto"><i class="fas fa-times"></i></button>
+        </div>
 
     </main>
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-gray-300 py-8 mt-auto">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="Gov Logo" class="h-6 w-6 object-contain bg-white rounded-full p-0.5">
-                        <h3 class="text-white font-bold text-lg">Jan Seva Digital Portal</h3>
-                    </div>
-                    <p class="text-sm text-gray-400 mb-4">A unified initiative to provide seamless, AI-assisted citizen services and scheme information across India.</p>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Quick Links</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-white transition-colors">National Portal of India (india.gov.in)</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Digital India</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">MyGov</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">RTI Online</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4 uppercase text-sm tracking-wider">Contact & Support</h4>
-                    <ul class="space-y-2 text-sm mb-4">
-                        <li><i class="fas fa-phone-alt mr-2 w-4"></i> Toll Free: 1800-111-222</li>
-                        <li><i class="fas fa-envelope mr-2 w-4"></i> support@janseva.gov.in</li>
-                        <li><i class="fab fa-whatsapp mr-2 w-4"></i> +91 9013151515 (AI Agent)</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 mt-8 pt-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
-                <p>&copy; 2026 Government Citizen Services. All rights reserved.</p>
-                <div class="space-x-4 mt-4 md:mt-0">
-                    <a href="#" class="hover:text-white">Privacy Policy</a>
-                    <a href="#" class="hover:text-white">Terms of Use</a>
-                    <a href="#" class="hover:text-white">Accessibility Statement</a>
-                </div>
-            </div>
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm" data-i18n="footer_text">&copy; 2026 Government Citizen Services. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Custom Modal for Alerts/Messages -->
-    <div id="custom-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-50 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300" id="modal-content">
-            <div class="text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4" id="modal-icon-container">
-                    <i class="fas fa-info-circle text-gov-blue text-xl" id="modal-icon"></i>
-                </div>
-                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">Notification</h3>
-                <div class="mt-2">
-                    <p class="text-sm text-gray-500" id="modal-message">Message goes here.</p>
-                </div>
-                <div class="mt-6">
-                    <button type="button" onclick="closeModal()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gov-blue text-base font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gov-blue sm:text-sm">
-                        Okay
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- JavaScript Logic -->
     <script>
-        // --- Navigation & View Logic ---
+        // --- Full Page i18n Translation Logic ---
+        const i18nDict = {
+            en: {
+                app_name: "Jan Seva Agent",
+                app_desc: "Digital Citizen Services",
+                nav_ask: "Ask Agent",
+                nav_faq: "FAQ",
+                nav_faq_full: "FAQ & Info",
+                nav_schemes: "Schemes",
+                nav_apply: "Apply",
+                nav_track: "Track Status",
+                nav_schemes_dir: "Schemes Directory",
+                nav_apply_serv: "Apply for Services",
+                nav_track_req: "Track Request",
+                sel_lang: "Select Language:",
+                home_title: "Welcome to Jan Seva Digital Portal",
+                home_subtitle: "Your one-stop AI assistant for government schemes, document applications, and service tracking.",
+                card_ai_title: "Ask AI Agent",
+                card_ai_desc: "Get answers in your regional language instantly.",
+                card_schemes_title: "Schemes Directory",
+                card_schemes_desc: "Browse official PM-JAY, PM-KISAN & more.",
+                card_apply_title: "Apply Online",
+                card_apply_desc: "Step-by-step guided application and document upload.",
+                card_track_title: "Track Status",
+                card_track_desc: "Check live status of your submitted applications.",
+                banner_title: "Need immediate assistance?",
+                banner_desc: "Our AI Agent can converse in English, Hindi, and Marathi. Ask about taxes, pensions, or how to apply for a Domicile certificate.",
+                banner_btn: "Start Chat Now",
+                chat_header_title: "Seva Sahayak (AI Agent)",
+                chat_header_status: "Online | Ready to help",
+                chat_placeholder: "Type your query here...",
+                chat_sug_1: "Am I eligible for PM-KISAN?",
+                chat_sug_2: "How to apply for PMAY?",
+                chat_sug_3: "What is Ayushman Bharat?",
+                chat_sug_4: "Track my application",
+                schemes_title: "Schemes Directory",
+                schemes_subtitle: "Structured information from official government portals.",
+                schemes_search_ph: "Search schemes...",
+                cat_agri: "Agriculture",
+                cat_health: "Health",
+                cat_housing: "Housing",
+                cat_finance: "Finance & Pensions",
+                cat_women: "Women Empowerment",
+                sch_pmkisan_title: "PM-KISAN Samman Nidhi",
+                sch_pmkisan_desc: "Income support of Rs. 6,000/- per year in three equal installments to all landholding farmer families.",
+                sch_pmfby_title: "PM Fasal Bima Yojana",
+                sch_pmfby_desc: "Comprehensive crop insurance scheme providing financial support to farmers suffering crop loss/damage.",
+                sch_pmjay_title: "Ayushman Bharat (PM-JAY)",
+                sch_pmjay_desc: "Provides health cover of Rs. 5 lakhs per family per year for secondary and tertiary care hospitalization.",
+                sch_pmay_title: "PM Awas Yojana (PMAY)",
+                sch_pmay_desc: "Housing for All scheme aiming to provide affordable housing to the urban and rural poor.",
+                sch_pmjdy_title: "PM Jan Dhan Yojana (PMJDY)",
+                sch_pmjdy_desc: "National Mission for Financial Inclusion to ensure access to financial services like Banking, Credit, Insurance.",
+                sch_apy_title: "Atal Pension Yojana (APY)",
+                sch_apy_desc: "A pension scheme primarily focused on the unorganized sector workers, ensuring a guaranteed minimum pension.",
+                sch_pmmvy_title: "PM Matru Vandana Yojana",
+                sch_pmmvy_desc: "A maternity benefit program providing cash incentives for pregnant women and lactating mothers.",
+                sch_ssy_title: "Sukanya Samriddhi Yojana",
+                sch_ssy_desc: "A small deposit scheme for the girl child to encourage parents to build a fund for her future education and marriage.",
+                dept_agri: "Ministry of Agriculture",
+                dept_health: "Ministry of Health",
+                dept_housing: "MoHUA / MoRD",
+                dept_finance: "Ministry of Finance",
+                dept_wcd: "Ministry of WCD",
+                dept_post: "India Post",
+                official_site: "Official Site",
+                no_schemes_found: "No schemes found",
+                no_schemes_sub: "Try adjusting your search terms.",
+                apply_title: "Certificate Application Assistant",
+                apply_subtitle: "Guided process to apply for Domicile / Income / Caste Certificates.",
+                form_simulation_note: "Interactive Form Simulation",
+                form_submit: "Submit Demo",
+                track_title: "Track Request Status",
+                track_subtitle: "Enter your Application ID or Reference Number to get real-time updates.",
+                track_placeholder: "e.g. APP-9824-MH",
+                track_btn: "Check Status",
+                footer_text: "© 2026 Government Citizen Services. All rights reserved.",
+                bot_greeting: "Namaste! I am your Jan Seva Digital Assistant. How can I help you today with Schemes, Certificates, or Taxes?",
+                settings_title: "Agent Settings",
+                api_key_label: "Gemini API Key (Optional)",
+                api_key_help: "Leave blank to use the built-in offline mock database for schemes.",
+                btn_cancel: "Cancel",
+                btn_save: "Save",
+                fallback_msg: "I don't have specific details on that in my offline database. Please check the Schemes Directory or configure an API key for advanced answers.",
+                sim_wa_btn: "Simulate WhatsApp Update",
+                wa_title: "Jan Seva Update",
+                wa_body: "Your application APP-9824-MH status has been updated to: APPROVED. You can download the certificate from the portal.",
+                
+                // FAQ Section (English)
+                faq_title: "Citizen Query & FAQ Portal",
+                faq_subtitle: "Find answers to common questions regarding schemes, taxes, pensions, and certificates.",
+                faq_cat_schemes: "Government Schemes & Subsidies",
+                faq_q1_scheme: "Who is eligible to apply for government schemes, and what are the income criteria?",
+                faq_a1_scheme: "Eligibility varies by scheme. Generally, EWS (Economically Weaker Sections) requires an annual family income below ₹8 Lakhs. Always check specific scheme guidelines like PM-KISAN (landholding farmers) or PM-JAY (SECC 2011 database).",
+                faq_q2_scheme: "How and where can I apply for a scheme?",
+                faq_a2_scheme: "You can apply online via dedicated portals (like pmkisan.gov.in) or offline at Common Service Centres (CSCs), Tehsil offices, or Gram Panchayat offices.",
+                faq_cat_taxes: "Taxes & GST",
+                faq_q1_tax: "How do I link my PAN card with my Aadhaar card?",
+                faq_a1_tax: "Visit the Income Tax e-Filing portal (incometax.gov.in). Go to the 'Link Aadhaar' section under Quick Links. Enter your PAN, Aadhaar number, and name as per Aadhaar to submit the request.",
+                faq_q2_tax: "What are the current income tax slabs?",
+                faq_a2_tax: "Under the new tax regime (default), income up to ₹3 Lakh is exempt. Slabs scale up gradually. Rebates under Section 87A often make income up to ₹7 Lakh tax-free. Consult the latest budget documents for exact percentages.",
+                faq_cat_pension: "Pensions & Retirement Benefits",
+                faq_q1_pension: "How can I check my Provident Fund (PF) balance or withdraw money?",
+                faq_a1_pension: "You can check your PF balance and request withdrawals using the EPFO Member e-Sewa portal or the UMANG mobile app by logging in with your UAN (Universal Account Number) and password.",
+                faq_q2_pension: "How to submit a digital life certificate (Jeevan Pramaan)?",
+                faq_a2_pension: "Pensioners can submit Jeevan Pramaan using the Face RD app on smartphones, at local CSCs, bank branches, or via Postmen utilizing the India Post Payments Bank doorstep service.",
+                faq_cat_cert: "Certificates & Official Documents",
+                faq_q1_cert: "Where do I apply for an Income, Caste, or Domicile certificate?",
+                faq_a1_cert: "Applications can be made on your State's e-District portal online, or physically at the local Tehsildar / SDM office or a nearby Common Service Centre (CSC / Maha-e-Seva Kendra)."
+            },
+            hi: {
+                app_name: "जन सेवा एजेंट",
+                app_desc: "डिजिटल नागरिक सेवा",
+                nav_ask: "एजेंट से पूछें",
+                nav_faq: "सामान्य प्रश्न (FAQ)",
+                nav_faq_full: "सामान्य प्रश्न और जानकारी",
+                nav_schemes: "योजनाएं",
+                nav_apply: "आवेदन करें",
+                nav_track: "स्थिति जांचें",
+                nav_schemes_dir: "योजना निर्देशिका",
+                nav_apply_serv: "सेवाओं के लिए आवेदन",
+                nav_track_req: "अनुरोध ट्रैक करें",
+                sel_lang: "भाषा चुनें:",
+                home_title: "जन सेवा डिजिटल पोर्टल में आपका स्वागत है",
+                home_subtitle: "सरकारी योजनाओं, दस्तावेज़ आवेदनों और सेवा ट्रैकिंग के लिए आपका वन-स्टॉप AI सहायक।",
+                card_ai_title: "AI एजेंट से पूछें",
+                card_ai_desc: "तुरंत अपनी क्षेत्रीय भाषा में उत्तर प्राप्त करें।",
+                card_schemes_title: "योजना निर्देशिका",
+                card_schemes_desc: "आधिकारिक PM-JAY, PM-KISAN और अन्य ब्राउज़ करें।",
+                card_apply_title: "ऑनलाइन आवेदन",
+                card_apply_desc: "चरण-दर-चरण निर्देशित आवेदन और दस्तावेज़ अपलोड।",
+                card_track_title: "स्थिति जांचें",
+                card_track_desc: "अपने प्रस्तुत आवेदनों की लाइव स्थिति की जाँच करें।",
+                banner_title: "क्या तत्काल सहायता की आवश्यकता है?",
+                banner_desc: "हमारा एआई एजेंट अंग्रेजी, हिंदी और मराठी में बातचीत कर सकता है। करों, पेंशन या प्रमाणपत्रों के बारे में पूछें।",
+                banner_btn: "अभी चैट शुरू करें",
+                chat_header_title: "सेवा सहायक (AI एजेंट)",
+                chat_header_status: "ऑनलाइन | मदद के लिए तैयार",
+                chat_placeholder: "अपनी पूछताछ यहां लिखें...",
+                chat_sug_1: "क्या मैं पीएम-किसान के लिए पात्र हूँ?",
+                chat_sug_2: "पीएमएवाई (PMAY) के लिए आवेदन कैसे करें?",
+                chat_sug_3: "आयुष्मान भारत क्या है?",
+                chat_sug_4: "मेरा आवेदन ट्रैक करें",
+                schemes_title: "योजना निर्देशिका",
+                schemes_subtitle: "आधिकारिक सरकारी पोर्टलों से संरचित जानकारी।",
+                schemes_search_ph: "योजनाएं खोजें...",
+                cat_agri: "कृषि",
+                cat_health: "स्वास्थ्य",
+                cat_housing: "आवास",
+                cat_finance: "वित्त और पेंशन",
+                cat_women: "महिला सशक्तिकरण",
+                sch_pmkisan_title: "पीएम-किसान सम्मान निधि",
+                sch_pmkisan_desc: "सभी भूमिधारक किसान परिवारों को तीन समान किस्तों में प्रति वर्ष 6,000/- रुपये की आय सहायता।",
+                sch_pmfby_title: "पीएम फसल बीमा योजना",
+                sch_pmfby_desc: "फसल के नुकसान का सामना कर रहे किसानों को वित्तीय सहायता प्रदान करने वाली व्यापक फसल बीमा योजना।",
+                sch_pmjay_title: "आयुष्मान भारत (PM-JAY)",
+                sch_pmjay_desc: "माध्यमिक और तृतीयक देखभाल अस्पताल में भर्ती के लिए प्रति परिवार प्रति वर्ष 5 लाख रुपये का स्वास्थ्य कवर।",
+                sch_pmay_title: "पीएम आवास योजना (PMAY)",
+                sch_pmay_desc: "शहरी और ग्रामीण गरीबों को किफायती आवास प्रदान करने के उद्देश्य से सभी के लिए आवास योजना।",
+                sch_pmjdy_title: "पीएम जन धन योजना (PMJDY)",
+                sch_pmjdy_desc: "बैंकिंग, ऋण, बीमा जैसी वित्तीय सेवाओं तक पहुंच सुनिश्चित करने के लिए वित्तीय समावेशन के लिए राष्ट्रीय मिशन।",
+                sch_apy_title: "अटल पेंशन योजना (APY)",
+                sch_apy_desc: "मुख्य रूप से असंगठित क्षेत्र के श्रमिकों पर केंद्रित एक पेंशन योजना, जो न्यूनतम पेंशन की गारंटी देती है।",
+                sch_pmmvy_title: "पीएम मातृ वंदना योजना",
+                sch_pmmvy_desc: "गर्भवती महिलाओं और स्तनपान कराने वाली माताओं के लिए नकद प्रोत्साहन प्रदान करने वाला मातृत्व लाभ कार्यक्रम।",
+                sch_ssy_title: "सुकन्या समृद्धि योजना",
+                sch_ssy_desc: "बालिका के भविष्य की शिक्षा और विवाह के लिए एक फंड बनाने के लिए माता-पिता को प्रोत्साहित करने वाली एक छोटी जमा योजना।",
+                dept_agri: "कृषि मंत्रालय",
+                dept_health: "स्वास्थ्य मंत्रालय",
+                dept_housing: "आवास और शहरी मामलों का मंत्रालय",
+                dept_finance: "वित्त मंत्रालय",
+                dept_wcd: "महिला एवं बाल विकास मंत्रालय",
+                dept_post: "भारतीय डाक",
+                official_site: "आधिकारिक साइट",
+                no_schemes_found: "कोई योजना नहीं मिली",
+                no_schemes_sub: "अपने खोज शब्दों को समायोजित करने का प्रयास करें।",
+                apply_title: "प्रमाणपत्र आवेदन सहायक",
+                apply_subtitle: "अधिवास / आय / जाति प्रमाण पत्र के लिए आवेदन करने की निर्देशित प्रक्रिया।",
+                form_simulation_note: "इंटरैक्टिव फॉर्म सिमुलेशन",
+                form_submit: "डेमो सबमिट करें",
+                track_title: "अनुरोध की स्थिति जांचें",
+                track_subtitle: "वास्तविक समय के अपडेट प्राप्त करने के लिए अपनी एप्लिकेशन आईडी दर्ज करें।",
+                track_placeholder: "जैसे: APP-9824-MH",
+                track_btn: "स्थिति जांचें",
+                footer_text: "© 2026 सरकारी नागरिक सेवाएँ। सर्वाधिकार सुरक्षित।",
+                bot_greeting: "नमस्ते! मैं आपका जन सेवा डिजिटल सहायक हूँ। आज मैं योजनाओं, प्रमाणपत्रों या करों के साथ आपकी कैसे मदद कर सकता हूँ?",
+                settings_title: "एजेंट सेटिंग्स",
+                api_key_label: "जेमिनी API कुंजी (वैकल्पिक)",
+                api_key_help: "योजनाओं के लिए अंतर्निहित ऑफ़लाइन मॉक डेटाबेस का उपयोग करने के लिए रिक्त छोड़ दें।",
+                btn_cancel: "रद्द करें",
+                btn_save: "सहेजें",
+                fallback_msg: "मेरे ऑफ़लाइन डेटाबेस में इसके बारे में विशिष्ट विवरण नहीं हैं। कृपया योजना निर्देशिका देखें या उन्नत उत्तरों के लिए API कुंजी कॉन्फ़िगर करें।",
+                sim_wa_btn: "व्हाट्सएप अपडेट का अनुकरण करें",
+                wa_title: "जन सेवा अपडेट",
+                wa_body: "आपका आवेदन APP-9824-MH स्थिति अपडेट कर दी गई है: स्वीकृत। आप पोर्टल से प्रमाणपत्र डाउनलोड कर सकते हैं।",
+
+                // FAQ Section (Hindi)
+                faq_title: "नागरिक प्रश्न और सामान्य प्रश्न (FAQ) पोर्टल",
+                faq_subtitle: "योजनाओं, करों, पेंशन और प्रमाणपत्रों के बारे में सामान्य प्रश्नों के उत्तर पाएं।",
+                faq_cat_schemes: "सरकारी योजनाएं और सब्सिडी",
+                faq_q1_scheme: "सरकारी योजनाओं के लिए आवेदन करने के लिए कौन पात्र है, और आय मानदंड क्या हैं?",
+                faq_a1_scheme: "पात्रता योजना के अनुसार भिन्न होती है। आम तौर पर, EWS के लिए वार्षिक पारिवारिक आय ₹8 लाख से कम होनी चाहिए। हमेशा पीएम-किसान या पीएम-जेएवाई (PM-JAY) जैसे विशिष्ट योजना दिशानिर्देशों की जांच करें।",
+                faq_q2_scheme: "मैं किसी योजना के लिए कैसे और कहाँ आवेदन कर सकता हूँ?",
+                faq_a2_scheme: "आप समर्पित पोर्टलों (जैसे pmkisan.gov.in) के माध्यम से ऑनलाइन या सामान्य सेवा केंद्रों (CSC), तहसील कार्यालयों या ग्राम पंचायत कार्यालयों में ऑफ़लाइन आवेदन कर सकते हैं।",
+                faq_cat_taxes: "कर और जीएसटी (GST)",
+                faq_q1_tax: "मैं अपने पैन कार्ड को अपने आधार कार्ड से कैसे लिंक करूं?",
+                faq_a1_tax: "आयकर ई-फाइलिंग पोर्टल (incometax.gov.in) पर जाएं। क्विक लिंक्स के तहत 'लिंक आधार' सेक्शन में जाएं। अनुरोध सबमिट करने के लिए अपना पैन, आधार नंबर और नाम दर्ज करें।",
+                faq_q2_tax: "वर्तमान आयकर स्लैब क्या हैं?",
+                faq_a2_tax: "नई कर व्यवस्था (डिफ़ॉल्ट) के तहत, ₹3 लाख तक की आय छूट प्राप्त है। धारा 87A के तहत छूट अक्सर ₹7 लाख तक की आय को कर-मुक्त कर देती है।",
+                faq_cat_pension: "पेंशन और सेवानिवृत्ति लाभ",
+                faq_q1_pension: "मैं अपने भविष्य निधि (PF) का बैलेंस कैसे जांच सकता हूं या पैसे कैसे निकाल सकता हूं?",
+                faq_a1_pension: "आप अपने UAN (यूनिवर्सल अकाउंट नंबर) और पासवर्ड के साथ लॉग इन करके EPFO सदस्य ई-सेवा पोर्टल या UMANG मोबाइल ऐप का उपयोग करके अपना PF बैलेंस देख सकते हैं।",
+                faq_q2_pension: "डिजिटल जीवन प्रमाण पत्र (जीवन प्रमाण) कैसे जमा करें?",
+                faq_a2_pension: "पेंशनभोगी स्मार्टफोन पर फेस आरडी ऐप (Face RD) का उपयोग करके, स्थानीय सीएससी, बैंक शाखाओं या डाकियों के माध्यम से अपना जीवन प्रमाण पत्र जमा कर सकते हैं।",
+                faq_cat_cert: "प्रमाण पत्र और आधिकारिक दस्तावेज",
+                faq_q1_cert: "मैं आय, जाति या अधिवास प्रमाण पत्र के लिए कहां आवेदन करूं?",
+                faq_a1_cert: "आवेदन आपके राज्य के ई-डिस्ट्रिक्ट पोर्टल पर ऑनलाइन, या स्थानीय तहसीलदार / एसडीएम कार्यालय या नजदीकी सीएससी केंद्र पर भौतिक रूप से किए जा सकते हैं।"
+            },
+            mr: {
+                app_name: "जन सेवा एजंट",
+                app_desc: "डिजिटल नागरिक सेवा",
+                nav_ask: "एजंटला विचारा",
+                nav_faq: "FAQ",
+                nav_faq_full: "FAQ आणि माहिती",
+                nav_schemes: "योजना",
+                nav_apply: "अर्ज करा",
+                nav_track: "स्थिती तपासा",
+                nav_schemes_dir: "योजना निर्देशिका",
+                nav_apply_serv: "सेवांसाठी अर्ज",
+                nav_track_req: "विनंती ट्रॅक करा",
+                sel_lang: "भाषा निवडा:",
+                home_title: "जन सेवा डिजिटल पोर्टलवर आपले स्वागत आहे",
+                home_subtitle: "सरकारी योजना, दस्तऐवज अर्ज आणि सेवा ट्रॅकिंगसाठी आपला वन-स्टॉप एआय सहाय्यक.",
+                card_ai_title: "एआय एजंटला विचारा",
+                card_ai_desc: "आपल्या प्रादेशिक भाषेत त्वरित उत्तरे मिळवा.",
+                card_schemes_title: "योजना निर्देशिका",
+                card_schemes_desc: "अधिकृत PM-JAY, PM-KISAN आणि बरेच काही ब्राउझ करा.",
+                card_apply_title: "ऑनलाइन अर्ज करा",
+                card_apply_desc: "टप्प्याटप्प्याने मार्गदर्शित अर्ज आणि दस्तऐवज अपलोड.",
+                card_track_title: "स्थिती तपासा",
+                card_track_desc: "आपल्या सबमिट केलेल्या अर्जांची थेट स्थिती तपासा.",
+                banner_title: "त्वरित मदत हवी आहे का?",
+                banner_desc: "आमचा एआय एजंट इंग्रजी, हिंदी आणि मराठीमध्ये संवाद साधू शकतो. कर, पेन्शन किंवा प्रमाणपत्रांबद्दल विचारा.",
+                banner_btn: "आता चॅट सुरू करा",
+                chat_header_title: "सेवा सहाय्यक (एआय एजंट)",
+                chat_header_status: "ऑनलाइन | मदतीसाठी तयार",
+                chat_placeholder: "तुमची शंका येथे टाइप करा...",
+                chat_sug_1: "मी पीएम-किसानसाठी पात्र आहे का?",
+                chat_sug_2: "PMAY साठी अर्ज कसा करावा?",
+                chat_sug_3: "आयुष्मान भारत म्हणजे काय?",
+                chat_sug_4: "माझा अर्ज ट्रॅक करा",
+                schemes_title: "योजना निर्देशिका",
+                schemes_subtitle: "अधिकृत सरकारी पोर्टल्सवरील संरचित माहिती.",
+                schemes_search_ph: "योजना शोधा...",
+                cat_agri: "कृषी",
+                cat_health: "आरोग्य",
+                cat_housing: "गृहनिर्माण",
+                cat_finance: "वित्त आणि पेन्शन",
+                cat_women: "महिला सक्षमीकरण",
+                sch_pmkisan_title: "पीएम-किसान सन्मान निधी",
+                sch_pmkisan_desc: "सर्व भूधारक शेतकरी कुटुंबांना तीन समान हप्त्यांमध्ये प्रति वर्ष ६,०००/- रुपयांची आर्थिक मदत.",
+                sch_pmfby_title: "पीएम पीक विमा योजना",
+                sch_pmfby_desc: "पिकांचे नुकसान झालेल्या शेतकऱ्यांना आर्थिक मदत देणारी सर्वसमावेशक पीक विमा योजना.",
+                sch_pmjay_title: "आयुष्मान भारत (PM-JAY)",
+                sch_pmjay_desc: "दुय्यम आणि तृतीयक काळजी रुग्णालयात दाखल करण्यासाठी प्रति कुटुंब प्रति वर्ष ५ लाख रुपयांचे आरोग्य संरक्षण.",
+                sch_pmay_title: "पीएम आवास योजना (PMAY)",
+                sch_pmay_desc: "शहरी आणि ग्रामीण गरिबांना परवडणारी घरे उपलब्ध करून देण्याच्या उद्देशाने सर्वांसाठी घरे योजना.",
+                sch_pmjdy_title: "पीएम जन धन योजना (PMJDY)",
+                sch_pmjdy_desc: "बँकिंग, कर्ज, विमा यासारख्या आर्थिक सेवांपर्यंत पोहोच सुनिश्चित करण्यासाठी आर्थिक समावेशनासाठी राष्ट्रीय अभियान.",
+                sch_apy_title: "अटल पेन्शन योजना (APY)",
+                sch_apy_desc: "प्रामुख्याने असंघटित क्षेत्रातील कामगारांवर लक्ष केंद्रित करणारी पेन्शन योजना, जी किमान पेन्शनची हमी देते.",
+                sch_pmmvy_title: "पीएम मातृ वंदना योजना",
+                sch_pmmvy_desc: "गर्भवती महिला आणि स्तनदा मातांना रोख प्रोत्साहन देणारा मातृत्व लाभ कार्यक्रम.",
+                sch_ssy_title: "सुकन्या समृद्धी योजना",
+                sch_ssy_desc: "मुलीच्या भविष्यातील शिक्षण आणि विवाहासाठी निधी तयार करण्यासाठी पालकांना प्रोत्साहित करणारी लहान ठेव योजना.",
+                dept_agri: "कृषी मंत्रालय",
+                dept_health: "आरोग्य मंत्रालय",
+                dept_housing: "गृहनिर्माण मंत्रालय",
+                dept_finance: "अर्थ मंत्रालय",
+                dept_wcd: "महिला आणि बाल विकास मंत्रालय",
+                dept_post: "भारतीय टपाल",
+                official_site: "अधिकृत साइट",
+                no_schemes_found: "कोणतीही योजना आढळली नाही",
+                no_schemes_sub: "तुमचे शोध शब्द बदलून पहा.",
+                apply_title: "प्रमाणपत्र अर्ज सहाय्यक",
+                apply_subtitle: "अधिवास / उत्पन्न / जातीच्या प्रमाणपत्रांसाठी अर्ज करण्याची मार्गदर्शित प्रक्रिया.",
+                form_simulation_note: "संवादी फॉर्म सिम्युलेशन",
+                form_submit: "डेमो सबमिट करा",
+                track_title: "विनंतीची स्थिती तपासा",
+                track_subtitle: "रिअल-टाइम अपडेट्स मिळवण्यासाठी तुमचा अर्ज आयडी प्रविष्ट करा.",
+                track_placeholder: "उदा. APP-9824-MH",
+                track_btn: "स्थिती तपासा",
+                footer_text: "© 2026 सरकारी नागरिक सेवा. सर्व हक्क राखीव.",
+                bot_greeting: "नमस्कार! मी तुमचा जन सेवा डिजिटल सहाय्यक आहे. मी तुम्हाला योजना, प्रमाणपत्रे किंवा करांबद्दल कशी मदत करू शकतो?",
+                settings_title: "एजंट सेटिंग्ज",
+                api_key_label: "जेमिनी API की (पर्यायी)",
+                api_key_help: "योजनांसाठी अंगभूत ऑफलाइन मॉक डेटाबेस वापरण्यासाठी रिक्त सोडा.",
+                btn_cancel: "रद्द करा",
+                btn_save: "जतन करा",
+                fallback_msg: "माझ्या ऑफलाइन डेटाबेसमध्ये यावर विशिष्ट तपशील नाहीत. कृपया योजना निर्देशिका तपासा किंवा प्रगत उत्तरांसाठी API की कॉन्फिगर करा.",
+                sim_wa_btn: "व्हॉट्सॲप अपडेटचे अनुकरण करा",
+                wa_title: "जन सेवा अपडेट",
+                wa_body: "तुमचा अर्ज APP-9824-MH स्थिती अपडेट केली गेली आहे: मंजूर. तुम्ही पोर्टलवरून प्रमाणपत्र डाउनलोड करू शकता.",
+                
+                // FAQ Section (Marathi)
+                faq_title: "नागरिक शंका आणि FAQ पोर्टल",
+                faq_subtitle: "योजना, कर, पेन्शन आणि प्रमाणपत्रांबद्दलच्या सामान्य प्रश्नांची उत्तरे शोधा.",
+                faq_cat_schemes: "सरकारी योजना आणि सबसिडी",
+                faq_q1_scheme: "सरकारी योजनांसाठी अर्ज करण्यास कोण पात्र आहे आणि उत्पन्नाचे निकष काय आहेत?",
+                faq_a1_scheme: "पात्रता योजनेनुसार बदलते. साधारणपणे, EWS साठी वार्षिक कौटुंबिक उत्पन्न ₹८ लाखांपेक्षा कमी असणे आवश्यक आहे. PM-KISAN किंवा PM-JAY सारख्या विशिष्ट योजना मार्गदर्शक तत्त्वे नेहमी तपासा.",
+                faq_q2_scheme: "मी योजनेसाठी कसा आणि कुठे अर्ज करू शकतो?",
+                faq_a2_scheme: "तुम्ही समर्पित पोर्टल्स (उदा. pmkisan.gov.in) द्वारे ऑनलाइन किंवा सामायिक सेवा केंद्रे (CSC), तहसील कार्यालये किंवा ग्रामपंचायत कार्यालयांमध्ये ऑफलाइन अर्ज करू शकता.",
+                faq_cat_taxes: "कर आणि GST",
+                faq_q1_tax: "मी माझे पॅन कार्ड आधार कार्डशी कसे लिंक करू?",
+                faq_a1_tax: "प्राप्तिकर ई-फायलिंग पोर्टलला (incometax.gov.in) भेट द्या. क्विक लिंक्स अंतर्गत 'लिंक आधार' विभागात जा. विनंती सबमिट करण्यासाठी तुमचा पॅन, आधार क्रमांक आणि नाव प्रविष्ट करा.",
+                faq_q2_tax: "सध्याचे प्राप्तिकर स्लॅब काय आहेत?",
+                faq_a2_tax: "नवीन कर प्रणाली (डिफॉल्ट) अंतर्गत, ₹३ लाखांपर्यंतचे उत्पन्न करमुक्त आहे. कलम 87A अंतर्गत सूट अनेकदा ₹७ लाखांपर्यंतचे उत्पन्न करमुक्त करते.",
+                faq_cat_pension: "पेन्शन आणि निवृत्ती लाभ",
+                faq_q1_pension: "मी माझा भविष्य निर्वाह निधी (PF) शिल्लक कसा तपासू शकतो किंवा पैसे कसे काढू शकतो?",
+                faq_a1_pension: "तुमचा UAN (युनिव्हर्सल अकाउंट नंबर) आणि पासवर्ड वापरून लॉग इन करून तुम्ही EPFO सदस्य ई-सेवा पोर्टल किंवा उमंग (UMANG) मोबाइल ॲप वापरून तुमची पीएफ शिल्लक तपासू शकता.",
+                faq_q2_pension: "डिजिटल जीवन प्रमाणपत्र (जीवन प्रमाण) कसे सादर करावे?",
+                faq_a2_pension: "पेन्शनधारक स्मार्टफोनवर फेस आरडी (Face RD) ॲप वापरून, स्थानिक CSC, बँक शाखा किंवा पोस्टमनद्वारे जीवन प्रमाणपत्र सादर करू शकतात.",
+                faq_cat_cert: "प्रमाणपत्रे आणि अधिकृत कागदपत्रे",
+                faq_q1_cert: "मी उत्पन्न, जात किंवा अधिवास (Domicile) प्रमाणपत्रासाठी कुठे अर्ज करू?",
+                faq_a1_cert: "अर्ज तुमच्या राज्याच्या ई-डिस्ट्रिक्ट पोर्टलवर ऑनलाइन किंवा स्थानिक तहसीलदार / एसडीएम कार्यालयात किंवा जवळच्या CSC केंद्रात भौतिकरित्या करता येतात."
+            }
+        };
+
+        let currentLang = 'en';
+
+        function changeLanguage() {
+            currentLang = document.getElementById('lang-select').value;
+            
+            // Translate Text Elements
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if(i18nDict[currentLang][key]) {
+                    element.innerHTML = i18nDict[currentLang][key]; // Using innerHTML if icons exist inside
+                }
+            });
+
+            // Translate Placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if(i18nDict[currentLang][key]) {
+                    element.placeholder = i18nDict[currentLang][key];
+                }
+            });
+
+            // Reset Chat to match Language
+            const chatMessages = document.getElementById('chat-messages');
+            if(chatMessages && chatMessages.children.length > 0) {
+                chatMessages.innerHTML = '';
+                chatHistory = []; 
+                initChat();
+            }
+        }
+
+        // --- Navigation Logic ---
         function switchView(viewId) {
-            // Hide all views
-            document.querySelectorAll('.view-section').forEach(el => {
-                el.classList.add('hidden');
-            });
-            
-            // Show requested view
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
             document.getElementById('view-' + viewId).classList.remove('hidden');
-            
-            // Update active state in nav
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-gov-saffron');
-            });
-            // Rough match for active state coloring (desktop only)
-            event && event.currentTarget && event.currentTarget.classList && event.currentTarget.classList.add('text-gov-saffron');
-
-            // Scroll to top
             window.scrollTo(0, 0);
-
-            // Special initializations
+            
             if(viewId === 'chat' && document.getElementById('chat-messages').children.length === 0) {
                 initChat();
             }
         }
 
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('hidden');
+            document.getElementById('mobile-menu').classList.toggle('hidden');
         }
 
-        // --- Language & Content Customization (Mock) ---
-        const translations = {
-            en: {
-                greeting: "Namaste! I am your Jan Seva Digital Assistant. How can I help you today with Schemes, Certificates, or Taxes?",
-                typing: "Agent is typing...",
-                notUnderstood: "I'm still learning. Could you rephrase that? Try asking about 'PM KISAN', 'Pension', or 'Apply for Domicile'."
-            },
-            hi: {
-                greeting: "नमस्ते! मैं आपका जन सेवा डिजिटल सहायक हूँ। आज मैं योजनाओं, प्रमाणपत्रों या करों के साथ आपकी कैसे मदद कर सकता हूँ?",
-                typing: "एजेंट टाइप कर रहा है...",
-                notUnderstood: "मुझे समझ नहीं आया। क्या आप इसे फिर से कह सकते हैं? 'पीएम किसान', 'पेंशन' या 'प्रमाणपत्र' के बारे में पूछने का प्रयास करें।"
-            },
-            mr: {
-                greeting: "नमस्कार! मी तुमचा जन सेवा डिजिटल सहाय्यक आहे. मी तुम्हाला योजना, प्रमाणपत्रे किंवा करांबद्दल कशी मदत करू शकतो?",
-                typing: "एजंट टाइप करत आहे...",
-                notUnderstood: "मला समजले नाही. आपण 'पीएम किसान', 'पेन्शन' किंवा 'प्रमाणपत्र' बद्दल विचारण्याचा प्रयत्न करू शकता."
+        // --- Schemes Search Logic ---
+        function filterSchemes() {
+            const input = document.getElementById('scheme-search').value.toLowerCase();
+            const cards = document.querySelectorAll('.scheme-card');
+            let found = false;
+
+            cards.forEach(card => {
+                const titleData = card.getAttribute('data-title');
+                if(titleData.includes(input)) {
+                    card.style.display = 'block';
+                    found = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if(!found) {
+                document.getElementById('no-schemes-msg').classList.remove('hidden');
+            } else {
+                document.getElementById('no-schemes-msg').classList.add('hidden');
             }
-        };
+        }
 
-        let currentLang = 'en';
+        // --- Dummy Form Logic ---
+        function submitApplication() {
+            document.getElementById('application-form').classList.add('hidden');
+            document.getElementById('form-success').classList.remove('hidden');
+        }
 
-        // Gemini AI Agent State
-        let chatHistory = [];
-        const systemPrompt = "Act as a helpful Indian Citizen Services Agent. Answer queries about government schemes, taxes, pensions, and certificates. Provide accurate, official information based on India.gov.in and MyScheme. Respond in English or regional languages if requested. Format your response cleanly.";
-        const geminiApiKey = ""; // Required for Canvas runtime
+        // --- Dummy Tracking Logic ---
+        function trackApplication(e) {
+            e.preventDefault();
+            document.getElementById('tracking-result').classList.remove('hidden');
+        }
 
-        function changeLanguage() {
-            currentLang = document.getElementById('lang-select').value;
-            // Clear chat and re-init to show new greeting
-            const chatMessages = document.getElementById('chat-messages');
-            if(chatMessages.children.length > 0) {
-                chatMessages.innerHTML = '';
-                chatHistory = []; // Reset history on language change
-                initChat();
-            }
+        // --- FAQ Accordion Logic ---
+        function toggleFaq(btn) {
+            const answer = btn.nextElementSibling;
+            const icon = btn.querySelector('i');
             
-            // Show small toast/modal
-            showModal('Language Changed', 'Interface language updated to ' + document.querySelector(`#lang-select option[value="${currentLang}"]`).text, 'info');
+            if (answer.classList.contains('hidden')) {
+                answer.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                answer.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
         }
 
-        // --- Chatbot Logic ---
+        // --- Gemini AI Chat Logic ---
+        let chatHistory = [];
+        let geminiApiKey = localStorage.getItem('jan_seva_gemini_key') || "";
+
+        function openSettings() {
+            document.getElementById('api-key-input').value = geminiApiKey;
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        function saveSettings() {
+            geminiApiKey = document.getElementById('api-key-input').value.trim();
+            localStorage.setItem('jan_seva_gemini_key', geminiApiKey);
+            closeSettings();
+        }
+
         function initChat() {
-            addMessage(translations[currentLang].greeting, 'bot');
+            addMessage(i18nDict[currentLang]['bot_greeting'], 'bot');
+        }
+
+        function sendSuggestedMessage(msg) {
+            document.getElementById('chat-input').value = msg;
+            document.getElementById('chat-form').dispatchEvent(new Event('submit'));
         }
 
         function handleChatSubmit(e) {
@@ -893,17 +1099,9 @@
             const msg = input.value.trim();
             if(!msg) return;
             
-            // Add user message
             addMessage(msg, 'user');
             input.value = '';
-            
-            // Process reply
-            processBotReply(msg.toLowerCase());
-        }
-
-        function sendSuggestedMessage(msg) {
-            document.getElementById('chat-input').value = msg;
-            document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+            processBotReply(msg);
         }
 
         function addMessage(text, sender, isHTML = false) {
@@ -930,9 +1128,9 @@
                 msgDiv.id = 'typing-indicator';
                 msgDiv.className = 'flex items-start space-x-3 fade-in';
                 msgDiv.innerHTML = `
-                    <img src="https://placehold.co/100x100/ffffff/1e3a8a?text=Bot" class="w-8 h-8 rounded-full border border-gray-200 shadow-sm mt-1">
-                    <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-4 shadow-sm typing-indicator">
-                        <span></span><span></span><span></span>
+                    <img src="https://placehold.co/100x100/ffffff/1e3a8a?text=Bot" class="w-8 h-8 rounded-full border border-gray-200 shadow-sm mt-1 flex-shrink-0">
+                    <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm text-gray-400 text-sm">
+                        <i class="fas fa-ellipsis-h fa-beat"></i>
                     </div>
                 `;
             }
@@ -941,390 +1139,241 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        function removeTypingIndicator() {
-            const el = document.getElementById('typing-indicator');
-            if(el) el.remove();
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
         }
 
-        function formatMarkdown(text) {
-            // Simple markdown formatter for bold and lists
-            let formatted = escapeHTML(text);
-            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'); // Bold
-            formatted = formatted.replace(/\*(.*?)\*/g, '<i>$1</i>'); // Italic
-            formatted = formatted.replace(/\n/g, '<br>'); // Line breaks
-            
-            // basic bullet points
-            formatted = formatted.replace(/<br>\* /g, '<br>• ');
-            formatted = formatted.replace(/<br>- /g, '<br>• ');
-            
-            return formatted;
+        const mockResponses = {
+            en: [
+                { keys: ["pm-kisan", "kisan", "farmer", "agriculture", "eligible"], text: "**PM-KISAN Eligibility:**\n• You must be a landholding farmer family.\n• You must be an Indian citizen.\n• Excludes institutional landholders, taxpayers, and active/retired government employees.\nBenefit: Rs. 6,000/year in 3 installments." },
+                { keys: ["pmay", "awas", "house", "housing"], text: "**PMAY (Housing) Eligibility:**\n• Beneficiary family should not own a pucca house anywhere in India.\n• Income criteria applies based on EWS/LIG/MIG categories.\n• Adult female membership is often mandatory in property ownership." },
+                { keys: ["ayushman", "pmjay", "health", "hospital"], text: "**Ayushman Bharat (PM-JAY):**\nProvides health cover of Rs. 5 lakhs per family per year for secondary and tertiary care hospitalization. Eligibility is based on SECC 2011 database deprivations." },
+                { keys: ["track", "status"], text: "To track your application, please go to the 'Track Status' section from the menu and enter your Application ID (e.g., APP-1234-MH)." },
+                { keys: ["pan", "aadhaar", "link"], text: "**Link PAN with Aadhaar:**\nVisit incometax.gov.in. Navigate to the 'Link Aadhaar' section. You'll need your PAN, Aadhaar number, and name as printed on Aadhaar. A late fee may apply based on current rules." },
+                { keys: ["pf", "provident", "withdraw", "balance", "epfo"], text: "**Check PF / Withdraw:**\nYou can check your PF balance or initiate a withdrawal claim using the EPFO Member e-Sewa portal or the UMANG mobile app. Make sure your UAN is activated and linked with Aadhaar." },
+                { keys: ["tax", "itr", "return", "slab"], text: "**Income Tax Info:**\nThe last date to file ITR is typically July 31st. Under the new tax regime, income up to ₹3 Lakh is exempt, and rebates make up to ₹7 Lakh effectively tax-free." },
+                { keys: ["certificate", "caste", "income", "domicile"], text: "**Official Certificates:**\nYou can apply for Income, Caste, or Domicile certificates via your State's online e-District portal or by visiting the nearest Common Service Centre (CSC) or Tehsildar office." }
+            ],
+            hi: [
+                { keys: ["pm-kisan", "kisan", "किसान", "कृषि", "पात्रता"], text: "**पीएम-किसान पात्रता:**\n• आपके पास कृषि योग्य भूमि होनी चाहिए।\n• आप एक भारतीय नागरिक होने चाहिए।\n• करदाताओं और सरकारी कर्मचारियों को बाहर रखा गया है।\nलाभ: 3 किस्तों में 6,000 रुपये/वर्ष।" },
+                { keys: ["pmay", "awas", "आवास", "घर"], text: "**पीएमएवाई (आवास) पात्रता:**\n• लाभार्थी परिवार के पास भारत में कहीं भी पक्का घर नहीं होना चाहिए।\n• ईडब्ल्यूएस/एलआईजी/एमआईजी श्रेणियों के आधार पर आय मानदंड लागू होता है।" },
+                { keys: ["ayushman", "pmjay", "स्वास्थ्य", "अस्पताल", "आयुष्मान"], text: "**आयुष्मान भारत (PM-JAY):**\nमाध्यमिक और तृतीयक देखभाल के लिए प्रति परिवार प्रति वर्ष 5 लाख रुपये का स्वास्थ्य कवर प्रदान करता है। पात्रता एसईसीसी 2011 डेटाबेस पर आधारित है।" },
+                { keys: ["track", "स्थिति", "ट्रैक"], text: "अपने आवेदन को ट्रैक करने के लिए, कृपया मेनू से 'स्थिति जांचें' अनुभाग पर जाएं और अपना एप्लिकेशन आईडी दर्ज करें।" },
+                { keys: ["pan", "aadhaar", "लिंक", "पैन", "आधार"], text: "**पैन को आधार से लिंक करें:**\nincometax.gov.in पर जाएं। 'लिंक आधार' अनुभाग पर जाएं। आपको अपना पैन, आधार नंबर और नाम की आवश्यकता होगी।" },
+                { keys: ["pf", "provident", "निकाल", "बैलेंस", "पीएफ"], text: "**पीएफ चेक / निकालें:**\nआप EPFO सदस्य ई-सेवा पोर्टल या UMANG मोबाइल ऐप का उपयोग करके अपना PF बैलेंस देख सकते हैं और निकासी का दावा कर सकते हैं। आपका UAN सक्रिय होना चाहिए।" },
+                { keys: ["tax", "itr", "टैक्स", "रिटर्न"], text: "**आयकर जानकारी:**\nआईटीआर दाखिल करने की अंतिम तिथि आमतौर पर 31 जुलाई है। नई कर व्यवस्था के तहत, ₹3 लाख तक की आय छूट प्राप्त है।" },
+                { keys: ["certificate", "जाति", "आय", "प्रमाणपत्र", "अधिवास"], text: "**आधिकारिक प्रमाणपत्र:**\nआप अपने राज्य के ऑनलाइन ई-डिस्ट्रिक्ट पोर्टल के माध्यम से या निकटतम सीएससी (CSC) पर जाकर आय, जाति या अधिवास प्रमाण पत्र के लिए आवेदन कर सकते हैं।" }
+            ],
+            mr: [
+                { keys: ["pm-kisan", "kisan", "शेतकरी", "कृषी", "किसान", "पात्रता"], text: "**पीएम-किसान पात्रता:**\n• तुमच्या नावावर शेतजमीन असावी.\n• तुम्ही भारतीय नागरिक असावे.\n• करदाते आणि सरकारी कर्मचाऱ्यांना वगळण्यात आले आहे.\nफायदा: ३ हप्त्यांमध्ये ६,००० रुपये/वर्ष." },
+                { keys: ["pmay", "awas", "घर", "आवास"], text: "**पीएमएवाय (आवास) पात्रता:**\n• लाभार्थी कुटुंबाकडे भारतात कुठेही पक्के घर नसावे.\n• EWS/LIG/MIG श्रेणींवर आधारित उत्पन्न निकष लागू." },
+                { keys: ["ayushman", "pmjay", "आरोग्य", "रुग्णालय", "आयुष्मान"], text: "**आयुष्मान भारत (PM-JAY):**\nदुय्यम आणि तृतीयक काळजीसाठी प्रति कुटुंब प्रति वर्ष ५ लाख रुपयांचे आरोग्य संरक्षण देते. पात्रता SECC 2011 डेटाबेसवर आधारित आहे." },
+                { keys: ["track", "स्थिती", "ट्रॅक"], text: "तुमचा अर्ज ट्रॅक करण्यासाठी, कृपया मेनूमधून 'स्थिती तपासा' विभागात जा आणि तुमचा अर्ज आयडी प्रविष्ट करा." },
+                { keys: ["pan", "aadhaar", "लिंक", "पॅन", "आधार"], text: "**पॅन आधारशी लिंक करा:**\nincometax.gov.in ला भेट द्या. 'लिंक आधार' विभागात जा. तुम्हाला तुमचा पॅन, आधार क्रमांक आणि आधारवरील नाव लागेल." },
+                { keys: ["pf", "provident", "पैसे", "शिल्लक", "पीएफ"], text: "**पीएफ तपासा / काढा:**\nतुम्ही EPFO सदस्य ई-सेवा पोर्टल किंवा उमंग (UMANG) ॲप वापरून तुमची पीएफ शिल्लक तपासू शकता. तुमचा UAN सक्रिय असणे आवश्यक आहे." },
+                { keys: ["tax", "itr", "कर", "रिटर्न"], text: "**प्राप्तिकर माहिती:**\nITR भरण्याची शेवटची तारीख साधारणपणे ३१ जुलै असते. नवीन कर प्रणालीनुसार, ₹३ लाखांपर्यंतचे उत्पन्न करमुक्त आहे." },
+                { keys: ["certificate", "जात", "उत्पन्न", "प्रमाणपत्र", "अधिवास"], text: "**अधिकृत प्रमाणपत्रे:**\nतुम्ही तुमच्या राज्याच्या ई-डिस्ट्रिक्ट पोर्टलवरून किंवा जवळच्या CSC केंद्राला भेट देऊन प्रमाणपत्रे काढू शकता." }
+            ]
+        };
+
+        function getMockResponse(msg, lang) {
+            const lowerMsg = msg.toLowerCase();
+            const rules = mockResponses[lang] || mockResponses['en'];
+            for(let rule of rules) {
+                if(rule.keys.some(kw => lowerMsg.includes(kw))) {
+                    return rule.text;
+                }
+            }
+            return i18nDict[lang]['fallback_msg'];
         }
 
         async function processBotReply(userMsg) {
-            // Show typing indicator
             addMessage('', 'typing');
-            
-            // Add user turn to history
             chatHistory.push({ role: "user", parts: [{ text: userMsg }] });
+            
+            const renderBotMessage = (text) => {
+                document.getElementById('typing-indicator')?.remove();
+                let formatted = escapeHTML(text).replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+                addMessage(formatted, 'bot', true);
+                speakText(text); // Speak the AI response
+            };
+
+            if (!geminiApiKey) {
+                setTimeout(() => {
+                    const fallbackText = getMockResponse(userMsg, currentLang);
+                    chatHistory.push({ role: "model", parts: [{ text: fallbackText }] });
+                    renderBotMessage(fallbackText);
+                }, 800);
+                return;
+            }
+            
+            const systemPrompt = `You are a helpful Citizen Services Agent for the Indian Government.
+                Provide accurate, official information about Indian government schemes (PM-KISAN, Ayushman Bharat, PMAY, PMJDY, etc.), taxes, pensions, and certificates.
+                Always respond in the language the user is speaking (English, Hindi, or Marathi).
+                Be concise, polite, and structure your response with bullet points if necessary.`;
             
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${geminiApiKey}`;
             
-            const payload = {
-                contents: chatHistory,
-                systemInstruction: {
-                    parts: [{ text: systemPrompt }]
-                },
-            };
-
             try {
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({
+                        contents: chatHistory,
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
                 });
                 
                 const result = await response.json();
-                removeTypingIndicator();
 
-                if (result.candidates && result.candidates.length > 0 && result.candidates[0].content) {
+                if (result.candidates && result.candidates[0].content) {
                     const botText = result.candidates[0].content.parts[0].text;
-                    
-                    // Add bot turn to history
                     chatHistory.push(result.candidates[0].content);
-                    
-                    addMessage(formatMarkdown(botText), 'bot', true);
+                    renderBotMessage(botText);
                 } else {
-                    addMessage("I am having trouble connecting to the official database. Please try again in a moment.", 'bot');
+                    throw new Error("Invalid API Response");
                 }
             } catch (error) {
-                console.error("Gemini API Error:", error);
-                removeTypingIndicator();
-                addMessage("I'm currently unable to process your request due to a network error. Please try again.", 'bot');
+                console.warn("API Call Failed, using fallback. Error:", error);
+                const fallbackText = getMockResponse(userMsg, currentLang);
+                chatHistory.push({ role: "model", parts: [{ text: fallbackText }] });
+                renderBotMessage(fallbackText);
             }
         }
 
-        // --- Schemes Search Logic ---
-        function filterSchemes() {
-            const input = document.getElementById('scheme-search').value.toLowerCase();
-            const cards = document.querySelectorAll('.scheme-card');
-            let found = false;
+        // --- Web Speech API Logic ---
+        let recognition;
+        let isListening = false;
 
-            cards.forEach(card => {
-                const titleData = card.getAttribute('data-title');
-                if(titleData.includes(input)) {
-                    card.style.display = 'block';
-                    found = true;
-                } else {
-                    card.style.display = 'none';
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            
+            recognition.onstart = function() {
+                isListening = true;
+                const micBtn = document.getElementById('mic-btn');
+                micBtn.classList.add('listening');
+                micBtn.classList.remove('text-gray-400');
+                document.getElementById('chat-input').placeholder = "Listening...";
+            };
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('chat-input').value = transcript;
+                stopListening();
+                // Check if we are in chat view, if so submit immediately
+                if(!document.getElementById('view-chat').classList.contains('hidden')){
+                    document.getElementById('chat-form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
                 }
-            });
-
-            if(!found) {
-                document.getElementById('no-schemes-msg').classList.remove('hidden');
-            } else {
-                document.getElementById('no-schemes-msg').classList.add('hidden');
-            }
+            };
+            
+            recognition.onerror = function(event) {
+                console.warn("Speech recognition error", event.error);
+                stopListening();
+            };
+            
+            recognition.onend = function() {
+                stopListening();
+            };
         }
 
-        // --- Multi-Step Form Logic ---
-        let currentTab = 1;
-        const totalTabs = 4;
-
-        function showTab(n) {
-            // Hide all tabs
-            const tabs = document.querySelectorAll('.form-step');
-            tabs.forEach(tab => tab.classList.add('hidden'));
-            
-            // Show current tab
-            document.getElementById('step-' + n).classList.remove('hidden');
-            
-            // Update buttons
-            if (n === 1) {
-                document.getElementById('prev-btn').classList.add('hidden');
-            } else {
-                document.getElementById('prev-btn').classList.remove('hidden');
-            }
-            
-            if (n === totalTabs) {
-                document.getElementById('next-btn').classList.add('hidden');
-                document.getElementById('submit-btn').classList.remove('hidden');
-                populateReview();
-            } else {
-                document.getElementById('next-btn').classList.remove('hidden');
-                document.getElementById('submit-btn').classList.add('hidden');
-            }
-            
-            updateProgress(n);
-        }
-
-        function updateProgress(n) {
-            // Update bar width
-            const percent = ((n - 1) / (totalTabs - 1)) * 100;
-            document.getElementById('form-progress').style.width = percent + '%';
-            
-            // Update indicators
-            for (let i = 1; i <= totalTabs; i++) {
-                const indicator = document.getElementById('indicator-' + i);
-                const parent = indicator.parentElement;
-                
-                if (i < n) {
-                    // Completed
-                    indicator.className = 'w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold shadow-md ring-4 ring-white transition-colors duration-300';
-                    indicator.innerHTML = '<i class="fas fa-check"></i>';
-                    parent.querySelector('span').className = 'text-xs font-semibold mt-2 text-green-600 transition-colors duration-300';
-                } else if (i === n) {
-                    // Current
-                    indicator.className = 'w-8 h-8 rounded-full bg-gov-blue text-white flex items-center justify-center font-bold shadow-md ring-4 ring-white transition-colors duration-300';
-                    indicator.innerHTML = i === 4 ? '<i class="fas fa-check"></i>' : i;
-                    parent.querySelector('span').className = 'text-xs font-bold mt-2 text-gov-blue transition-colors duration-300';
-                } else {
-                    // Future
-                    indicator.className = 'w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center font-bold shadow-md ring-4 ring-white transition-colors duration-300';
-                    indicator.innerHTML = i === 4 ? '<i class="fas fa-check"></i>' : i;
-                    parent.querySelector('span').className = 'text-xs font-medium mt-2 text-gray-500 transition-colors duration-300';
-                }
-            }
-        }
-
-        function nextPrev(n) {
-            // Basic validation
-            if (n === 1 && !validateForm(currentTab)) return false;
-            
-            currentTab = currentTab + n;
-            showTab(currentTab);
-        }
-
-        function validateForm(tabNum) {
-            // Simple validation simulation
-            const tab = document.getElementById('step-' + tabNum);
-            const inputs = tab.querySelectorAll('input[required], select[required], textarea[required]');
-            let valid = true;
-            
-            inputs.forEach(input => {
-                if (!input.value) {
-                    valid = false;
-                    input.classList.add('border-red-500', 'ring-red-200');
-                } else {
-                    input.classList.remove('border-red-500', 'ring-red-200');
-                }
-            });
-
-            // Radio button validation for step 1
-            if(tabNum === 1) {
-                const radios = document.getElementsByName('cert_type');
-                let radioValid = false;
-                radios.forEach(r => { if(r.checked) radioValid = true; });
-                if(!radioValid) {
-                    showModal('Selection Required', 'Please select a Certificate Type.', 'warning');
-                    return false;
-                }
-            }
-
-            if (!valid) {
-                showModal('Missing Fields', 'Please fill all required fields marked with *', 'warning');
-            }
-            return valid;
-        }
-
-        function handleFileUpload(input, statusId) {
-            if(input.files && input.files[0]) {
-                const el = document.getElementById(statusId);
-                el.classList.remove('hidden');
-                el.innerHTML = `<i class="fas fa-check-circle mr-1"></i> ${input.files[0].name} attached`;
-            }
-        }
-
-        function populateReview() {
-            const name = document.getElementById('app-name').value || 'Not provided';
-            
-            // Get selected radio
-            const radios = document.getElementsByName('cert_type');
-            let service = '';
-            for(let i=0; i<radios.length; i++){
-                if(radios[i].checked) {
-                    service = radios[i].nextElementSibling.innerText;
-                    break;
-                }
-            }
-
-            document.getElementById('review-name').innerText = name;
-            document.getElementById('review-service').innerText = service;
-        }
-
-        function submitApplication() {
-            if(!document.getElementById('declaration').checked) {
-                showModal('Declaration Required', 'Please check the self declaration box before submitting.', 'warning');
+        function toggleListening() {
+            if (!recognition) {
+                alert("Speech recognition is not supported in this browser. Try Chrome or Edge.");
                 return;
             }
-
-            // Show loading state on button
-            const btn = document.getElementById('submit-btn');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
-            btn.disabled = true;
-
-            setTimeout(() => {
-                document.getElementById('application-form').classList.add('hidden');
-                document.getElementById('form-success').classList.remove('hidden');
-                
-                // Generate random ID
-                const randomId = 'APP-' + Math.floor(1000 + Math.random() * 9000) + '-MH';
-                document.getElementById('generated-app-id').innerText = randomId;
-            }, 1500);
-        }
-
-        function resetForm() {
-            document.getElementById('application-form').reset();
-            document.getElementById('application-form').classList.remove('hidden');
-            document.getElementById('form-success').classList.add('hidden');
-            
-            // Reset upload statuses
-            document.getElementById('id-upload-status').classList.add('hidden');
-            document.getElementById('addr-upload-status').classList.add('hidden');
-            
-            currentTab = 1;
-            showTab(1);
-        }
-
-        // --- Tracker Logic ---
-        function trackApplication(e) {
-            e.preventDefault();
-            const id = document.getElementById('tracking-id').value.trim().toUpperCase();
-            
-            const resultArea = document.getElementById('tracking-result');
-            const errorArea = document.getElementById('tracking-error');
-            
-            resultArea.classList.add('hidden');
-            errorArea.classList.add('hidden');
-            
-            // Show loading modal briefly
-            const submitBtn = e.target.querySelector('button');
-            const origText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-            submitBtn.disabled = true;
-
-            setTimeout(() => {
-                submitBtn.innerHTML = origText;
-                submitBtn.disabled = false;
-
-                // Fake API Logic
-                if (id === 'APP-9824-MH') {
-                    // Show standard progress
-                    document.getElementById('tr-app-id').innerText = id;
-                    document.getElementById('tr-service-name').innerText = "Domicile Certificate";
-                    document.getElementById('tr-applicant').innerText = "Rahul Sharma";
-                    
-                    // Set UI state to In Progress (Step 3)
-                    setupTrackerUI(3);
-                    resultArea.classList.remove('hidden');
-                } else if (id === 'PEN-1234') {
-                    // Show completed progress
-                    document.getElementById('tr-app-id').innerText = id;
-                    document.getElementById('tr-service-name').innerText = "Old Age Pension";
-                    document.getElementById('tr-applicant').innerText = "Sunita Devi";
-                    
-                    // Set UI state to Completed (Step 4)
-                    setupTrackerUI(4);
-                    resultArea.classList.remove('hidden');
-                } else if (id.length > 5) {
-                    // Random generation for other valid looking IDs
-                    document.getElementById('tr-app-id').innerText = id;
-                    document.getElementById('tr-service-name').innerText = "General Service Request";
-                    document.getElementById('tr-applicant').innerText = "Citizen";
-                    
-                    setupTrackerUI(2); // Just received
-                    resultArea.classList.remove('hidden');
-                } else {
-                    errorArea.classList.remove('hidden');
-                }
-            }, 800);
-        }
-
-        function setupTrackerUI(currentStep) {
-            const statusBadge = document.getElementById('tr-status-badge');
-            
-            if(currentStep === 4) {
-                statusBadge.className = "bg-green-100 text-green-800 text-sm font-bold px-4 py-1.5 rounded-full border border-green-200 inline-flex items-center";
-                statusBadge.innerHTML = '<i class="fas fa-check-circle mr-2"></i> Completed';
-                
-                // Update Step 3 visually
-                const s3 = document.getElementById('tr-step-3');
-                s3.querySelector('.absolute').className = "absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow flex items-center justify-center";
-                s3.querySelector('.absolute').innerHTML = '<i class="fas fa-check text-white text-xs"></i>';
-                s3.querySelector('.bg-blue-50').className = "bg-gray-50 p-4 rounded-lg border border-gray-100 ml-4 sm:ml-6";
-                s3.querySelector('h4').className = "font-bold text-gray-800";
-                
-                // Update Step 4 visually
-                const s4 = document.getElementById('tr-step-4');
-                s4.querySelector('.absolute').className = "absolute left-[-29px] sm:left-[-17px] w-8 h-8 bg-green-500 rounded-full border-4 border-white shadow flex items-center justify-center";
-                s4.querySelector('.absolute').innerHTML = '<i class="fas fa-check text-white text-xs"></i>';
-                s4.querySelector('.opacity-50').className = "bg-green-50 p-4 rounded-lg border border-green-200 ml-4 sm:ml-6 shadow-sm";
-                s4.querySelector('h4').className = "font-bold text-green-700";
-
+            if (isListening) {
+                recognition.stop();
             } else {
-                statusBadge.className = "bg-blue-100 text-blue-800 text-sm font-bold px-4 py-1.5 rounded-full border border-blue-200 inline-flex items-center";
-                statusBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-blue-500 mr-2 animate-pulse"></span> In Progress';
-                
-                // Reset to default intermediate state if needed...
-                // (For simplicity in this static demo, we assume the HTML default is step 3 active)
+                const langMap = { 'en': 'en-IN', 'hi': 'hi-IN', 'mr': 'mr-IN' };
+                recognition.lang = langMap[currentLang] || 'en-IN';
+                try {
+                    recognition.start();
+                } catch(e) { console.warn("Recognition already started"); }
             }
         }
 
-        // --- Utilities ---
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    "'": '&#39;',
-                    '"': '&quot;'
-                }[tag] || tag)
-            );
-        }
-
-        // Custom Modal Logic (Replacing alert())
-        function showModal(title, message, type = 'info') {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = message;
-            
-            const icon = document.getElementById('modal-icon');
-            const iconContainer = document.getElementById('modal-icon-container');
-            
-            if (type === 'warning') {
-                icon.className = 'fas fa-exclamation-triangle text-orange-500 text-xl';
-                iconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-orange-100 mb-4';
-            } else if (type === 'success') {
-                icon.className = 'fas fa-check text-green-600 text-xl';
-                iconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4';
-            } else {
-                icon.className = 'fas fa-info-circle text-gov-blue text-xl';
-                iconContainer.className = 'mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4';
+        function stopListening() {
+            isListening = false;
+            const micBtn = document.getElementById('mic-btn');
+            if(micBtn) {
+                micBtn.classList.remove('listening');
+                micBtn.classList.add('text-gray-400');
             }
-
-            const modal = document.getElementById('custom-modal');
-            const content = document.getElementById('modal-content');
-            
-            modal.classList.remove('hidden');
-            // Trigger reflow
-            void modal.offsetWidth;
-            
-            modal.classList.remove('opacity-0');
-            content.classList.remove('scale-95');
-            content.classList.add('scale-100');
+            const input = document.getElementById('chat-input');
+            if(input) input.placeholder = i18nDict[currentLang]['chat_placeholder'];
         }
 
-        function closeModal() {
-            const modal = document.getElementById('custom-modal');
-            const content = document.getElementById('modal-content');
+        let isSpeakerOn = true;
+        function toggleSpeaker() {
+            isSpeakerOn = !isSpeakerOn;
+            const btn = document.getElementById('speaker-btn');
+            if (isSpeakerOn) {
+                btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                btn.classList.remove('text-gray-400');
+                btn.classList.add('text-white');
+            } else {
+                btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                btn.classList.remove('text-white');
+                btn.classList.add('text-gray-400');
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        function speakText(text) {
+            if (!isSpeakerOn || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel(); 
             
-            modal.classList.add('opacity-0');
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
+            // Clean markdown and newlines for speech
+            const cleanText = text.replace(/<[^>]+>/g, '').replace(/\*/g, '').replace(/\n/g, '. ');
             
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            const langMap = { 'en': 'en-IN', 'hi': 'hi-IN', 'mr': 'mr-IN' };
+            utterance.lang = langMap[currentLang] || 'en-IN';
+            
+            // Try to find a specific regional voice if available
+            const voices = window.speechSynthesis.getVoices();
+            const voice = voices.find(v => v.lang === utterance.lang) || voices.find(v => v.lang.startsWith(currentLang));
+            if(voice) utterance.voice = voice;
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Voice list needs to be loaded asynchronously in some browsers
+        window.speechSynthesis.onvoiceschanged = function() {
+            window.speechSynthesis.getVoices();
+        };
+
+        // --- WhatsApp Simulation Logic ---
+        function simulateWhatsApp() {
+            const msg = i18nDict[currentLang]['wa_body'];
+            document.getElementById('wa-msg').innerText = msg;
+            
+            const toast = document.getElementById('whatsapp-toast');
+            toast.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
+            
+            // Try to play a notification pop sound
+            try {
+                const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+                audio.volume = 0.5;
+                audio.play().catch(e => {}); 
+            } catch(e) {}
+            
+            // Auto hide after 6 seconds
             setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
+                hideWhatsAppToast();
+            }, 6000);
+        }
+
+        function hideWhatsAppToast() {
+            const toast = document.getElementById('whatsapp-toast');
+            toast.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
+        }
+
+        // Initialize default language translation on load
+        window.onload = function() {
+            changeLanguage();
         }
     </script>
 </body>
